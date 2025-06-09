@@ -9,7 +9,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.String(256), nullable=False)
-    role = db.Column(db.Enum('client', 'pro', name='user_roles'), nullable=False)
+    role = db.Column(db.Enum('client', 'pro', 'superadmin', name='user_roles'), nullable=False)
     company_name = db.Column(db.String(255), nullable=True)
     full_name = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -25,6 +25,10 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         """Check if provided password matches hash"""
         return check_password_hash(self.password_hash, password)
+    
+    def is_superadmin(self):
+        """Check if user is superadmin"""
+        return self.role == 'superadmin'
     
     def __repr__(self):
         return f'<User {self.email}>'

@@ -5,6 +5,7 @@ from app import app, db
 from models import User, Brief, Proposal
 from brief_generator import generate_brief_from_input
 from openai_helper import generate_structured_brief
+from admin_utils import superadmin_required, get_user_stats
 from i18n import _, get_current_language, get_languages
 import logging
 
@@ -368,6 +369,120 @@ def api_generate_brief():
             'success': False,
             'error': f'生成失敗: {str(e)}'
         }), 500
+
+# Admin Routes
+@app.route('/admin')
+@superadmin_required
+def admin_dashboard():
+    """Admin dashboard with statistics and overview"""
+    stats = get_user_stats()
+    return render_template('admin/dashboard.html', stats=stats, _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/admin/users')
+@superadmin_required
+def admin_users():
+    """Manage all users"""
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+    role_filter = request.args.get('role', '', type=str)
+    
+    query = User.query
+    
+    if search:
+        query = query.filter(User.email.ilike(f'%{search}%') | User.full_name.ilike(f'%{search}%'))
+    
+    if role_filter:
+        query = query.filter_by(role=role_filter)
+    
+    users = query.order_by(User.created_at.desc()).paginate(
+        page=page, per_page=20, error_out=False
+    )
+    
+    return render_template('admin/users.html', users=users, search=search, role_filter=role_filter, _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/admin/users/<int:user_id>')
+@superadmin_required
+def admin_user_detail(user_id):
+    """View user details"""
+    user = User.query.get_or_404(user_id)
+    user_briefs = Brief.query.filter_by(user_id=user_id).order_by(Brief.created_at.desc()).all()
+    user_proposals = Proposal.query.filter_by(user_id=user_id).order_by(Proposal.created_at.desc()).all()
+    
+    return render_template('admin/user_detail.html', user=user, user_briefs=user_briefs, user_proposals=user_proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/admin/users/<int:user_id>/toggle-role', methods=['POST'])
+@superadmin_required
+def admin_toggle_user_role(user_id):
+    """Toggle user role between client and pro"""
+    user = User.query.get_or_404(user_id)
+    
+    if user.role == 'client':
+        user.role = 'pro'
+        flash(f'User {user.email} changed to Professional', 'success')
+    elif user.role == 'pro':
+        user.role = 'client'
+        flash(f'User {user.email} changed to Client', 'success')
+    else:
+        flash('Cannot change superadmin role', 'error')
+        return redirect(url_for('admin_user_detail', user_id=user_id))
+    
+    db.session.commit()
+    return redirect(url_for('admin_user_detail', user_id=user_id))
+
+@app.route('/admin/briefs')
+@superadmin_required
+def admin_briefs():
+    """Manage all briefs"""
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '', type=str)
+    status_filter = request.args.get('status', '', type=str)
+    service_filter = request.args.get('service', '', type=str)
+    
+    query = Brief.query
+    
+    if search:
+        query = query.filter(Brief.title.ilike(f'%{search}%') | Brief.description.ilike(f'%{search}%'))
+    
+    if status_filter:
+        query = query.filter_by(status=status_filter)
+        
+    if service_filter:
+        query = query.filter_by(service_type=service_filter)
+    
+    briefs = query.order_by(Brief.created_at.desc()).paginate(
+        page=page, per_page=20, error_out=False
+    )
+    
+    return render_template('admin/briefs.html', briefs=briefs, search=search, status_filter=status_filter, service_filter=service_filter, _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/admin/briefs/<int:brief_id>')
+@superadmin_required
+def admin_brief_detail(brief_id):
+    """View brief details"""
+    brief = Brief.query.get_or_404(brief_id)
+    proposals = Proposal.query.filter_by(brief_id=brief_id).order_by(Proposal.created_at.desc()).all()
+    
+    return render_template('admin/brief_detail.html', brief=brief, proposals=proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/admin/briefs/<int:brief_id>/close', methods=['POST'])
+@superadmin_required
+def admin_close_brief(brief_id):
+    """Close a brief"""
+    brief = Brief.query.get_or_404(brief_id)
+    brief.status = 'closed'
+    db.session.commit()
+    flash(f'Brief "{brief.title}" has been closed', 'success')
+    return redirect(url_for('admin_brief_detail', brief_id=brief_id))
+
+@app.route('/admin/briefs/<int:brief_id>/reopen', methods=['POST'])
+@superadmin_required
+def admin_reopen_brief(brief_id):
+    """Reopen a brief"""
+    brief = Brief.query.get_or_404(brief_id)
+    brief.status = 'active'
+    db.session.commit()
+    flash(f'Brief "{brief.title}" has been reopened', 'success')
+    return redirect(url_for('admin_brief_detail', brief_id=brief_id))
 
 @app.errorhandler(404)
 def not_found_error(error):
