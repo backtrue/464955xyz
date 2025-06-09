@@ -7,6 +7,8 @@ from brief_generator import generate_brief_from_input
 from openai_helper import generate_structured_brief
 from admin_utils import superadmin_required, get_user_stats
 from brief_parser import parse_structured_brief
+from credit_manager import grant_registration_bonus, deduct_credit_for_brief, deduct_credit_for_proposal, admin_adjust_credits, get_registration_bonus_credits, set_registration_bonus_credits, initialize_credit_settings
+from models import SystemSettings, CreditTransaction
 from i18n import _, get_current_language, get_languages
 import logging
 

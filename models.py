@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Enum('client', 'pro', 'superadmin', name='user_roles'), nullable=False)
     company_name = db.Column(db.String(255), nullable=True)
     full_name = db.Column(db.String(255), nullable=True)
+    credits = db.Column(db.Integer, default=0, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
@@ -29,6 +30,21 @@ class User(UserMixin, db.Model):
     def is_superadmin(self):
         """Check if user is superadmin"""
         return self.role == 'superadmin'
+    
+    def has_credits(self, amount=1):
+        """Check if user has enough credits"""
+        return self.credits >= amount
+    
+    def deduct_credits(self, amount=1):
+        """Deduct credits from user account"""
+        if self.has_credits(amount):
+            self.credits -= amount
+            return True
+        return False
+    
+    def add_credits(self, amount):
+        """Add credits to user account"""
+        self.credits += amount
     
     def __repr__(self):
         return f'<User {self.email}>'
@@ -78,3 +94,57 @@ class Proposal(db.Model):
     
     def __repr__(self):
         return f'<Proposal {self.id} for Brief {self.brief_id}>'
+
+class SystemSettings(db.Model):
+    __tablename__ = 'system_settings'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    setting_key = db.Column(db.String(100), unique=True, nullable=False)
+    setting_value = db.Column(db.String(500), nullable=False)
+    description = db.Column(db.String(500), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    @staticmethod
+    def get_setting(key, default_value="0"):
+        """Get a system setting value"""
+        setting = SystemSettings.query.filter_by(setting_key=key).first()
+        return setting.setting_value if setting else default_value
+    
+    @staticmethod
+    def set_setting(key, value, description=None):
+        """Set or update a system setting"""
+        setting = SystemSettings.query.filter_by(setting_key=key).first()
+        if setting:
+            setting.setting_value = str(value)
+            setting.updated_at = datetime.utcnow()
+            if description:
+                setting.description = description
+        else:
+            setting = SystemSettings(
+                setting_key=key,
+                setting_value=str(value),
+                description=description
+            )
+            db.session.add(setting)
+        return setting
+
+class CreditTransaction(db.Model):
+    __tablename__ = 'credit_transactions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    amount = db.Column(db.Integer, nullable=False)  # Positive for credit, negative for debit
+    transaction_type = db.Column(db.Enum('registration_bonus', 'brief_creation', 'proposal_submission', 'admin_adjustment', name='transaction_types'), nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    related_brief_id = db.Column(db.Integer, db.ForeignKey('briefs.id'), nullable=True)
+    related_proposal_id = db.Column(db.Integer, db.ForeignKey('proposals.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', backref='credit_transactions')
+    brief = db.relationship('Brief', backref='credit_transactions')
+    proposal = db.relationship('Proposal', backref='credit_transactions')
+    
+    def __repr__(self):
+        return f'<CreditTransaction {self.id}: {self.amount} credits for user {self.user_id}>'
