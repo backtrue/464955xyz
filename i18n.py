@@ -152,6 +152,7 @@ TRANSLATIONS = {
         'accepted': 'Accepted',
         'preferred_platforms': 'Preferred Platforms',
         'posted': 'Posted',
+        'proposals_for': 'Proposals for',
     },
     
     'zh': {
@@ -299,6 +300,7 @@ TRANSLATIONS = {
         'accepted': '已接受',
         'preferred_platforms': '偏好平台',
         'posted': '發布於',
+        'proposals_for': '提案 -',
     },
     
     'ja': {
@@ -446,6 +448,7 @@ TRANSLATIONS = {
         'accepted': '承認済み',
         'preferred_platforms': '希望プラットフォーム',
         'posted': '投稿日',
+        'proposals_for': '提案 -',
     }
 }
 

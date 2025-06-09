@@ -29,7 +29,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="estimated_days" class="form-label">
-                                    <strong>Estimated Duration (Days)</strong>
+                                    <strong>{{ _('estimated_duration_days') }}</strong>
                                 </label>
                                 <input type="number" class="form-control" id="estimated_days" name="estimated_days" 
                                        min="1" max="365" required>
@@ -40,7 +40,7 @@
                         <!-- Proposal Message -->
                         <div class="mb-4">
                             <label for="message" class="form-label">
-                                <strong>Proposal Details</strong>
+                                <strong>{{ _('proposal_details') }}</strong>
                             </label>
                             <textarea class="form-control" id="message" name="message" rows="8" 
                                     placeholder="Describe your approach to this project. Include:
