@@ -18,11 +18,11 @@
                             <i class="fas fa-lightbulb me-2"></i>
                             <strong>{{ _('tips_for_better_results') }}:</strong>
                             <ul class="mb-0 mt-2">
-                                <li>Mention your business type and target audience</li>
-                                <li>Specify platforms you're interested in (Instagram, Facebook, Google Ads, etc.)</li>
-                                <li>Include your budget range if known</li>
-                                <li>Mention your goals (brand awareness, lead generation, sales, etc.)</li>
-                                <li>Specify timeline preferences</li>
+                                <li>{{ _('tip_business_type') }}</li>
+                                <li>{{ _('tip_platforms') }}</li>
+                                <li>{{ _('tip_budget') }}</li>
+                                <li>{{ _('tip_goals') }}</li>
+                                <li>{{ _('tip_timeline') }}</li>
                             </ul>
                         </div>
 
@@ -32,9 +32,9 @@
                                 <strong>{{ _('describe_your_marketing_needs') }}</strong>
                             </label>
                             <textarea class="form-control" id="raw_input" name="raw_input" rows="8" 
-                                    placeholder="Example: I run a fitness studio and need help with social media marketing to attract new members. I'm particularly interested in Instagram and Facebook campaigns to reach young professionals aged 25-40 in my local area. My budget is around $2,000-3,000 per month, and I want to focus on increasing brand awareness and generating leads for trial memberships. I'd like to start with a 2-month campaign to test effectiveness..." 
+                                    placeholder="{{ _('textarea_placeholder') }}" 
                                     required minlength="50"></textarea>
-                            <div class="form-text">Please provide at least 50 characters with detailed information about your marketing needs.</div>
+                            <div class="form-text">{{ _('textarea_help_text') }}</div>
                         </div>
 
                         <!-- Example Prompts -->
@@ -44,18 +44,18 @@
                                 <div class="col-md-6">
                                     <div class="card bg-secondary mb-2">
                                         <div class="card-body p-3">
-                                            <h6 class="card-title">E-commerce Example</h6>
-                                            <p class="card-text small">"I have an online clothing store targeting millennials. Need comprehensive digital marketing including Instagram ads, influencer partnerships, and email campaigns. Budget is $5,000/month for 3 months to boost holiday sales."</p>
-                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="fillExample(this.previousElementSibling.textContent)">Use This</button>
+                                            <h6 class="card-title">{{ _('ecommerce_example') }}</h6>
+                                            <p class="card-text small">{{ _('ecommerce_example_text') }}</p>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="fillExample(this.previousElementSibling.textContent)">{{ _('use_this') }}</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card bg-secondary mb-2">
                                         <div class="card-body p-3">
-                                            <h6 class="card-title">Service Business Example</h6>
-                                            <p class="card-text small">"I'm a financial advisor looking to generate qualified leads through LinkedIn and Google Ads. Target audience is business owners and high-income professionals. Budget around $3,000/month, need content creation and lead nurturing campaigns."</p>
-                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="fillExample(this.previousElementSibling.textContent)">Use This</button>
+                                            <h6 class="card-title">{{ _('service_example') }}</h6>
+                                            <p class="card-text small">{{ _('service_example_text') }}</p>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="fillExample(this.previousElementSibling.textContent)">{{ _('use_this') }}</button>
                                         </div>
                                     </div>
                                 </div>
