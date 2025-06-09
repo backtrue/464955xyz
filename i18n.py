@@ -17,7 +17,7 @@ TRANSLATIONS = {
         'logout': 'Logout',
         
         # Landing page
-        'welcome_title': 'Welcome to 464955.xyz',
+        'welcome_title': 'Welcome to 464955',
         'welcome_subtitle': '4649 (よろしく) = Let\'s work together, 55 = You and me, achieving together. A digital bulletin board that tells stories through marketing and matches through data.',
         'get_started': 'Get Started',
         'sign_in': 'Sign In',
@@ -353,19 +353,19 @@ TRANSLATIONS = {
         'logout': '登出',
         
         # Landing page
-        'welcome_title': '歡迎來到 464955.xyz',
-        'welcome_subtitle': '4649（よろしく）= 讓我們一起工作，55 = 是你，也是我，我們互相成就。用行銷說故事，也用數據媒合的數位佈告欄。',
+        'welcome_title': '是你在呼喚我嗎？',
+        'welcome_subtitle': '4649（よろしく），你好。你的行銷問題，請在464955這個佈告欄寫下你的需求，讓專業人士聽到你的 XYZ ，現身來解決你的行銷困境',
         'get_started': '開始使用',
         'sign_in': '登入',
         'go_to_dashboard': '前往控制台',
         
         # Features
-        'for_clients': '客戶服務',
-        'for_clients_desc': '用自然語言描述您的行銷需求。我們的系統會自動生成結構化的專案簡介，並為您連接合格的專業人士。',
-        'smart_brief_generation': '智能簡介生成',
-        'smart_brief_desc': '先進的演算法分析您的需求，創建包含預算估算、時程安排和推薦策略的詳細專案簡介。',
-        'for_professionals': '專業人士服務',
-        'for_professionals_desc': '瀏覽結構化的專案簡介，提交具競爭力的提案，展示您的專業知識以贏得新客戶。',
+        'for_clients': '我有行銷外包需求',
+        'for_clients_desc': '不會發包專案沒關係，我們的系統會自動生成結構化的專案簡介，並為您連接合格的專業人士。',
+        'smart_brief_generation': '讓我們幫你說人話',
+        'smart_brief_desc': '利用 AI Agent 幫你分析你的需求，創建包含預算估算、時程安排和推薦策略的詳細專案簡介。',
+        'for_professionals': '專業來挑案子',
+        'for_professionals_desc': '用你的專業來爭取更多曝光，提交具競爭力的提案，展示您的專業知識以贏得新客戶。',
         
         # How it works
         'how_it_works': '運作方式',
@@ -600,7 +600,7 @@ TRANSLATIONS = {
         'logout': 'ログアウト',
         
         # Landing page
-        'welcome_title': '464955.xyz へようこそ',
+        'welcome_title': '464955へようこそ',
         'welcome_subtitle': '4649（よろしく）= Let\'s work together、55 = あなたも私も、お互いに成長し合う。マーケティングでストーリーを語り、データでマッチングするデジタル掲示板。',
         'get_started': '始める',
         'sign_in': 'サインイン',
