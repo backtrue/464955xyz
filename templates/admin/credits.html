@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('credit_management') }} - 464955.xyz</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">464955.xyz</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        {{ _('admin_panel') }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">{{ _('dashboard') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">{{ _('users') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_briefs') }}">{{ _('briefs') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_credits') }}">{{ _('credit_management') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('index') }}">{{ _('back_to_site') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('logout') }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">{{ _('credit_management') }}</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Credit Settings -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('credit_settings') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('admin_update_credit_settings') }}" method="POST">
+                            <div class="mb-3">
+                                <label for="registration_bonus_credits" class="form-label">{{ _('registration_bonus_credits') }}</label>
+                                <input type="number" class="form-control" id="registration_bonus_credits" 
+                                       name="registration_bonus_credits" value="{{ current_bonus }}" min="0" max="100">
+                                <div class="form-text">{{ _('registration_bonus_help') }}</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i data-feather="save" class="feather-sm"></i> {{ _('save_settings') }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Low Credit Users -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('low_credit_users') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if low_credit_users %}
+                            <div class="list-group list-group-flush">
+                                {% for user in low_credit_users %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ user.email }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ user.role.title() }}</small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-warning">{{ user.credits }} {{ _('credits') }}</span>
+                                        <a href="{{ url_for('admin_user_detail', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                                            {{ _('manage') }}
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">{{ _('no_low_credit_users') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">{{ _('recent_transactions') }}</h5>
+                        <a href="{{ url_for('admin_credit_transactions') }}" class="btn btn-sm btn-outline-primary">
+                            {{ _('view_all') }}
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_transactions %}
+                            <div class="list-group list-group-flush">
+                                {% for transaction in recent_transactions %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ transaction.user.email }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ transaction.description or transaction.transaction_type.replace('_', ' ').title() }}</small>
+                                            <br>
+                                            <small class="text-muted">{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge {% if transaction.amount > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                                                {{ '{:+d}'.format(transaction.amount) }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">{{ _('no_transactions') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

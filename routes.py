@@ -559,6 +559,97 @@ def admin_reopen_brief(brief_id):
     flash(f'Brief "{brief.title}" has been reopened', 'success')
     return redirect(url_for('admin_brief_detail', brief_id=brief_id))
 
+@app.route('/admin/credits')
+@superadmin_required
+def admin_credits():
+    """Credit system management"""
+    current_bonus = get_registration_bonus_credits()
+    
+    # Get recent credit transactions
+    recent_transactions = CreditTransaction.query.order_by(CreditTransaction.created_at.desc()).limit(20).all()
+    
+    # Get users with low credits
+    low_credit_users = User.query.filter(User.credits < 2, User.role != 'superadmin').order_by(User.credits.asc()).limit(10).all()
+    
+    return render_template('admin/credits.html', 
+                         current_bonus=current_bonus,
+                         recent_transactions=recent_transactions,
+                         low_credit_users=low_credit_users,
+                         _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/admin/credits/settings', methods=['POST'])
+@superadmin_required
+def admin_update_credit_settings():
+    """Update credit system settings"""
+    try:
+        bonus_credits = int(request.form.get('registration_bonus_credits', 5))
+        if bonus_credits < 0:
+            bonus_credits = 0
+        
+        set_registration_bonus_credits(bonus_credits)
+        flash(f'Registration bonus updated to {bonus_credits} credits', 'success')
+        
+    except ValueError:
+        flash('Invalid credit amount', 'error')
+    except Exception as e:
+        flash('Error updating settings', 'error')
+        logging.error(f"Error updating credit settings: {e}")
+    
+    return redirect(url_for('admin_credits'))
+
+@app.route('/admin/credits/adjust/<int:user_id>', methods=['POST'])
+@superadmin_required
+def admin_adjust_user_credits(user_id):
+    """Manually adjust user credits"""
+    try:
+        amount = int(request.form.get('amount', 0))
+        description = request.form.get('description', 'Manual credit adjustment by admin')
+        
+        if amount == 0:
+            flash('Amount cannot be zero', 'error')
+            return redirect(url_for('admin_user_detail', user_id=user_id))
+        
+        success, message = admin_adjust_credits(user_id, amount, description)
+        
+        if success:
+            flash(f'Credits adjusted: {amount:+d}', 'success')
+        else:
+            flash(f'Error: {message}', 'error')
+            
+    except ValueError:
+        flash('Invalid amount', 'error')
+    except Exception as e:
+        flash('Error adjusting credits', 'error')
+        logging.error(f"Error adjusting credits for user {user_id}: {e}")
+    
+    return redirect(url_for('admin_user_detail', user_id=user_id))
+
+@app.route('/admin/credits/transactions')
+@superadmin_required
+def admin_credit_transactions():
+    """View all credit transactions"""
+    page = request.args.get('page', 1, type=int)
+    user_filter = request.args.get('user', '', type=str)
+    transaction_type = request.args.get('type', '', type=str)
+    
+    query = CreditTransaction.query
+    
+    if user_filter:
+        query = query.join(User).filter(User.email.ilike(f'%{user_filter}%'))
+    
+    if transaction_type:
+        query = query.filter_by(transaction_type=transaction_type)
+    
+    transactions = query.order_by(CreditTransaction.created_at.desc()).paginate(
+        page=page, per_page=50, error_out=False
+    )
+    
+    return render_template('admin/credit_transactions.html', 
+                         transactions=transactions,
+                         user_filter=user_filter,
+                         transaction_type=transaction_type,
+                         _=_, get_languages=get_languages, current_lang=get_current_language())
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html'), 404
