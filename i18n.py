@@ -293,6 +293,12 @@ TRANSLATIONS = {
         'to_be_discussed': '待討論',
         'not_specified': '未指定',
         'weeks_short': '週',
+        'professional_dashboard': '專業人員儀表板',
+        'available_briefs': '可接案件',
+        'my_proposals': '我的提案',
+        'accepted': '已接受',
+        'preferred_platforms': '偏好平台',
+        'posted': '發布於',
     },
     
     'ja': {
@@ -434,6 +440,12 @@ TRANSLATIONS = {
         'to_be_discussed': '要相談',
         'not_specified': '未指定',
         'weeks_short': '週間',
+        'professional_dashboard': 'プロフェッショナルダッシュボード',
+        'available_briefs': '利用可能なブリーフ',
+        'my_proposals': '私の提案',
+        'accepted': '承認済み',
+        'preferred_platforms': '希望プラットフォーム',
+        'posted': '投稿日',
     }
 }
 
