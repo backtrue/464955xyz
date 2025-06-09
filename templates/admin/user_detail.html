@@ -77,6 +77,21 @@
                             <p>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
                         </div>
                         
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('credits') }}</label>
+                            <p class="fw-bold text-primary">{{ user.credits }} {{ _('credits') }}</p>
+                        </div>
+                        
+                        <!-- Credit Management -->
+                        <div class="mb-3">
+                            <h6>{{ _('adjust_credits') }}</h6>
+                            <form action="{{ url_for('admin_adjust_user_credits', user_id=user.id) }}" method="POST" class="d-flex gap-2">
+                                <input type="number" class="form-control form-control-sm" name="amount" placeholder="{{ _('amount') }}" required style="max-width: 100px;">
+                                <input type="text" class="form-control form-control-sm" name="description" placeholder="{{ _('reason') }}" style="max-width: 150px;">
+                                <button type="submit" class="btn btn-sm btn-warning">{{ _('adjust') }}</button>
+                            </form>
+                        </div>
+                        
                         <!-- Role Management -->
                         {% if not user.is_superadmin() %}
                         <div class="mb-3">
