@@ -84,7 +84,7 @@ TRANSLATIONS = {
         'describe_your_marketing_needs': 'Describe Your Marketing Needs',
         'need_inspiration': 'Need inspiration? Try these examples:',
         'back_to_dashboard': 'Back to Dashboard',
-        'generate_brief': 'Generate Brief',
+        'generate_brief': 'Post Project',
         
         # Brief details
         'project_description': 'Project Description',
@@ -249,7 +249,7 @@ TRANSLATIONS = {
         'describe_your_marketing_needs': '描述您的行銷需求',
         'need_inspiration': '需要靈感？試試這些範例：',
         'back_to_dashboard': '返回控制台',
-        'generate_brief': '生成簡介',
+        'generate_brief': '我要發案',
         
         # Brief details
         'project_description': '專案描述',
@@ -414,7 +414,7 @@ TRANSLATIONS = {
         'describe_your_marketing_needs': 'マーケティングニーズを記述',
         'need_inspiration': 'インスピレーションが必要ですか？以下の例をお試しください：',
         'back_to_dashboard': 'ダッシュボードに戻る',
-        'generate_brief': 'ブリーフ生成',
+        'generate_brief': 'プロジェクト投稿',
         
         # Brief details
         'project_description': 'プロジェクト概要',
