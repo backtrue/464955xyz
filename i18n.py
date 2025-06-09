@@ -341,6 +341,10 @@ TRANSLATIONS = {
         'ready_to_get_started': 'Ready to Get Started?',
         'join_platform_desc': 'Join our platform and connect with the right marketing professionals today.',
         'start_now': 'Start Now',
+        
+        # Footer
+        'footer_tagline': 'Connecting clients with marketing professionals',
+        'footer_copyright': '© 2024 464955. All rights reserved.',
     },
     
     'zh': {
@@ -550,6 +554,10 @@ TRANSLATIONS = {
         'ready_to_get_started': '準備好開始了嗎？',
         'join_platform_desc': '加入我們的平台，今天就與合適的行銷專業人士聯繫。',
         'start_now': '立即開始',
+        
+        # Footer
+        'footer_tagline': '行銷發包接案新平台',
+        'footer_copyright': '© 2024 464955. 版權所有。',
         
         # User Profile - Traditional Chinese
         'user_profile': '用戶資料',
@@ -797,6 +805,10 @@ TRANSLATIONS = {
         'ready_to_get_started': 'Ready to Get Started?',
         'join_platform_desc': 'Join our platform and connect with the right marketing professionals today.',
         'start_now': 'Start Now',
+        
+        # Footer
+        'footer_tagline': 'マーケティング専門家とクライアントをつなぐ',
+        'footer_copyright': '© 2024 464955. 全ての権利を保有します。',
     }
 }
 
