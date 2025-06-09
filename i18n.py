@@ -140,6 +140,12 @@ TRANSLATIONS = {
         # Language selector
         'language': 'Language',
         'select_language': 'Select Language',
+        
+        # Additional common phrases
+        'no_proposals': 'No proposals',
+        'to_be_discussed': 'To be discussed',
+        'not_specified': 'Not specified',
+        'weeks_short': 'weeks',
     },
     
     'zh': {
@@ -275,6 +281,12 @@ TRANSLATIONS = {
         # Language selector
         'language': '語言',
         'select_language': '選擇語言',
+        
+        # Additional common phrases
+        'no_proposals': '暫無提案',
+        'to_be_discussed': '待討論',
+        'not_specified': '未指定',
+        'weeks_short': '週',
     },
     
     'ja': {
@@ -410,6 +422,12 @@ TRANSLATIONS = {
         # Language selector
         'language': '言語',
         'select_language': '言語選択',
+        
+        # Additional common phrases
+        'no_proposals': 'プロポーザルなし',
+        'to_be_discussed': '要相談',
+        'not_specified': '未指定',
+        'weeks_short': '週間',
     }
 }
 

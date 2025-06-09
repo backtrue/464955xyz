@@ -29,7 +29,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4>{{ briefs|length }}</h4>
-                            <p class="mb-0">Total Briefs</p>
+                            <p class="mb-0">{{ _('total_briefs') }}</p>
                         </div>
                         <div>
                             <i class="fas fa-file-alt fa-2x"></i>
@@ -44,7 +44,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4>{{ briefs|selectattr('status', 'equalto', 'active')|list|length }}</h4>
-                            <p class="mb-0">Active Briefs</p>
+                            <p class="mb-0">{{ _('active_briefs') }}</p>
                         </div>
                         <div>
                             <i class="fas fa-check-circle fa-2x"></i>
@@ -59,7 +59,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4>{{ briefs|sum(attribute='proposal_count') }}</h4>
-                            <p class="mb-0">Total Proposals</p>
+                            <p class="mb-0">{{ _('total_proposals') }}</p>
                         </div>
                         <div>
                             <i class="fas fa-handshake fa-2x"></i>
@@ -75,7 +75,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Your Briefs</h5>
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>{{ _('your_briefs') }}</h5>
                 </div>
                 <div class="card-body">
                     {% if briefs %}
@@ -83,13 +83,13 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Title</th>
-                                        <th>Platform</th>
-                                        <th>Budget</th>
-                                        <th>Status</th>
-                                        <th>Proposals</th>
-                                        <th>Created</th>
-                                        <th>Actions</th>
+                                        <th>{{ _('title') }}</th>
+                                        <th>{{ _('platform') }}</th>
+                                        <th>{{ _('budget') }}</th>
+                                        <th>{{ _('status') }}</th>
+                                        <th>{{ _('proposals') }}</th>
+                                        <th>{{ _('created') }}</th>
+                                        <th>{{ _('actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -117,9 +117,9 @@
                                         </td>
                                         <td>
                                             {% if brief.status == 'active' %}
-                                                <span class="badge bg-success">Active</span>
+                                                <span class="badge bg-success">{{ _('active') }}</span>
                                             {% elif brief.status == 'closed' %}
-                                                <span class="badge bg-secondary">Closed</span>
+                                                <span class="badge bg-secondary">{{ _('closed') }}</span>
                                             {% else %}
                                                 <span class="badge bg-warning">{{ brief.status.title() }}</span>
                                             {% endif %}
@@ -127,10 +127,10 @@
                                         <td>
                                             {% if brief.proposal_count > 0 %}
                                                 <a href="{{ url_for('view_proposals', brief_id=brief.id) }}" class="btn btn-sm btn-outline-primary">
-                                                    {{ brief.proposal_count }} {% if brief.proposal_count == 1 %}Proposal{% else %}Proposals{% endif %}
+                                                    {{ brief.proposal_count }} {{ _('proposals') }}
                                                 </a>
                                             {% else %}
-                                                <span class="text-muted">No proposals</span>
+                                                <span class="text-muted">{{ _('no_proposals') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>

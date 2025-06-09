@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Professional Dashboard - Marketing Hub{% endblock %}
+{% block title %}{{ _('professional_dashboard') }} - {{ _('marketing_hub') }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <h2><i class="fas fa-tachometer-alt me-2"></i>Professional Dashboard</h2>
-            <p class="text-muted mb-0">Welcome back, {{ current_user.full_name or current_user.email }}</p>
+            <h2><i class="fas fa-tachometer-alt me-2"></i>{{ _('professional_dashboard') }}</h2>
+            <p class="text-muted mb-0">{{ _('welcome_back') }}, {{ current_user.full_name or current_user.email }}</p>
         </div>
     </div>
 
@@ -20,7 +20,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4>{{ active_briefs|length }}</h4>
-                            <p class="mb-0">Available Briefs</p>
+                            <p class="mb-0">{{ _('available_briefs') }}</p>
                         </div>
                         <div>
                             <i class="fas fa-file-alt fa-2x"></i>
@@ -35,7 +35,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4>{{ my_proposals|length }}</h4>
-                            <p class="mb-0">My Proposals</p>
+                            <p class="mb-0">{{ _('my_proposals') }}</p>
                         </div>
                         <div>
                             <i class="fas fa-handshake fa-2x"></i>
@@ -50,7 +50,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4>{{ my_proposals|selectattr('status', 'equalto', 'accepted')|list|length }}</h4>
-                            <p class="mb-0">Accepted</p>
+                            <p class="mb-0">{{ _('accepted') }}</p>
                         </div>
                         <div>
                             <i class="fas fa-check-circle fa-2x"></i>
@@ -66,7 +66,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-search me-2"></i>Available Briefs</h5>
+                    <h5 class="mb-0"><i class="fas fa-search me-2"></i>{{ _('available_briefs') }}</h5>
                 </div>
                 <div class="card-body">
                     {% if active_briefs %}
@@ -79,13 +79,13 @@
                                         <p class="card-text">{{ brief.description[:150] }}{% if brief.description|length > 150 %}...{% endif %}</p>
                                         
                                         <div class="mb-2">
-                                            <strong>Goals:</strong> 
-                                            <span class="text-muted">{{ brief.marketing_goals or 'Not specified' }}</span>
+                                            <strong>{{ _('marketing_goals') }}:</strong> 
+                                            <span class="text-muted">{{ brief.marketing_goals or _('not_specified') }}</span>
                                         </div>
                                         
                                         {% if brief.platform_preference %}
                                         <div class="mb-2">
-                                            <strong>Platforms:</strong>
+                                            <strong>{{ _('preferred_platforms') }}:</strong>
                                             {% for platform in brief.platform_preference.split(', ') %}
                                                 <span class="badge bg-secondary me-1">{{ platform }}</span>
                                             {% endfor %}
@@ -93,7 +93,7 @@
                                         {% endif %}
                                         
                                         <div class="mb-2">
-                                            <strong>Budget:</strong>
+                                            <strong>{{ _('budget') }}:</strong>
                                             {% if brief.budget_min and brief.budget_max %}
                                                 ${{ "{:,}".format(brief.budget_min) }} - ${{ "{:,}".format(brief.budget_max) }}
                                             {% elif brief.budget_min %}
