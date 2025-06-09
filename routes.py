@@ -243,6 +243,63 @@ def view_brief(brief_id):
     
     return render_template('view_brief.html', brief=brief, proposals=proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
 
+@app.route('/brief/<int:brief_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_brief(brief_id):
+    """Edit a brief (only by the owner)"""
+    brief = Brief.query.get_or_404(brief_id)
+    
+    # Check if current user is the owner
+    if brief.user_id != current_user.id:
+        flash('You can only edit your own briefs.', 'error')
+        return redirect(url_for('view_brief', brief_id=brief_id))
+    
+    # Check if brief is still editable (no accepted proposals)
+    accepted_proposals = [p for p in brief.proposals if p.status == 'accepted']
+    if accepted_proposals:
+        flash('Cannot edit brief with accepted proposals.', 'error')
+        return redirect(url_for('view_brief', brief_id=brief_id))
+    
+    if request.method == 'POST':
+        # Update brief fields
+        brief.title = request.form.get('title', '').strip()
+        brief.description = request.form.get('description', '').strip()
+        brief.service_type = request.form.get('service_type')
+        
+        # Optional fields
+        budget_min = request.form.get('budget_min')
+        budget_max = request.form.get('budget_max')
+        brief.budget_min = int(budget_min) if budget_min and budget_min.isdigit() else None
+        brief.budget_max = int(budget_max) if budget_max and budget_max.isdigit() else None
+        
+        duration = request.form.get('duration_weeks')
+        brief.duration_weeks = int(duration) if duration and duration.isdigit() else None
+        
+        brief.platform_preference = request.form.get('platform_preference', '').strip() or None
+        brief.marketing_goals = request.form.get('marketing_goals', '').strip() or None
+        brief.target_audience = request.form.get('target_audience', '').strip() or None
+        
+        # Additional collaboration fields
+        brief.materials_provider = request.form.get('materials_provider') or None
+        brief.copywriting_provider = request.form.get('copywriting_provider') or None
+        brief.communication_frequency = request.form.get('communication_frequency') or None
+        
+        # Validation
+        if not brief.title or not brief.description or not brief.service_type:
+            flash('Title, description, and service type are required.', 'error')
+            return render_template('edit_brief.html', brief=brief, _=_, get_languages=get_languages, current_lang=get_current_language())
+        
+        try:
+            db.session.commit()
+            flash('Brief updated successfully!', 'success')
+            return redirect(url_for('view_brief', brief_id=brief_id))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error updating brief. Please try again.', 'error')
+            logging.error(f"Error updating brief: {e}")
+    
+    return render_template('edit_brief.html', brief=brief, _=_, get_languages=get_languages, current_lang=get_current_language())
+
 @app.route('/brief/<int:brief_id>/propose', methods=['GET', 'POST'])
 @login_required
 def submit_proposal(brief_id):

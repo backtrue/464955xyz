@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('edit_brief') }} - 464955.xyz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1>{{ _('edit_brief') }}</h1>
+                    <p class="text-muted">{{ _('edit_brief_description') }}</p>
+                </div>
+                <a href="{{ url_for('view_brief', brief_id=brief.id) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>{{ _('back_to_brief') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ _('brief_information') }}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">{{ _('title') }} <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ brief.title }}" required>
+                        </div>
+
+                        <!-- Service Type -->
+                        <div class="mb-3">
+                            <label for="service_type" class="form-label">{{ _('service_type') }} <span class="text-danger">*</span></label>
+                            <select class="form-select" id="service_type" name="service_type" required>
+                                <option value="">{{ _('select_service') }}</option>
+                                <option value="meta_ads" {% if brief.service_type == 'meta_ads' %}selected{% endif %}>Meta Ads</option>
+                                <option value="google_ads" {% if brief.service_type == 'google_ads' %}selected{% endif %}>Google Ads</option>
+                                <option value="seo" {% if brief.service_type == 'seo' %}selected{% endif %}>SEO</option>
+                            </select>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">{{ _('description') }} <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required>{{ brief.description }}</textarea>
+                        </div>
+
+                        <!-- Budget Range -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="budget_min" class="form-label">{{ _('budget_min') }} (USD)</label>
+                                <input type="number" class="form-control" id="budget_min" name="budget_min" value="{{ brief.budget_min or '' }}" min="0">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="budget_max" class="form-label">{{ _('budget_max') }} (USD)</label>
+                                <input type="number" class="form-control" id="budget_max" name="budget_max" value="{{ brief.budget_max or '' }}" min="0">
+                            </div>
+                        </div>
+
+                        <!-- Duration -->
+                        <div class="mb-3">
+                            <label for="duration_weeks" class="form-label">{{ _('duration') }} ({{ _('weeks') }})</label>
+                            <input type="number" class="form-control" id="duration_weeks" name="duration_weeks" value="{{ brief.duration_weeks or '' }}" min="1">
+                        </div>
+
+                        <!-- Platform Preference -->
+                        <div class="mb-3">
+                            <label for="platform_preference" class="form-label">{{ _('platform_preference') }}</label>
+                            <input type="text" class="form-control" id="platform_preference" name="platform_preference" value="{{ brief.platform_preference or '' }}">
+                        </div>
+
+                        <!-- Marketing Goals -->
+                        <div class="mb-3">
+                            <label for="marketing_goals" class="form-label">{{ _('marketing_goals') }}</label>
+                            <textarea class="form-control" id="marketing_goals" name="marketing_goals" rows="3">{{ brief.marketing_goals or '' }}</textarea>
+                        </div>
+
+                        <!-- Target Audience -->
+                        <div class="mb-3">
+                            <label for="target_audience" class="form-label">{{ _('target_audience') }}</label>
+                            <textarea class="form-control" id="target_audience" name="target_audience" rows="3">{{ brief.target_audience or '' }}</textarea>
+                        </div>
+
+                        <!-- Collaboration Details -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">{{ _('collaboration_details') }}</h6>
+                            </div>
+                            <div class="card-body">
+                                <!-- Materials Provider -->
+                                <div class="mb-3">
+                                    <label for="materials_provider" class="form-label">{{ _('materials_provider') }}</label>
+                                    <select class="form-select" id="materials_provider" name="materials_provider">
+                                        <option value="">{{ _('select_option') }}</option>
+                                        <option value="client" {% if brief.materials_provider == 'client' %}selected{% endif %}>{{ _('client_provides') }}</option>
+                                        <option value="agency" {% if brief.materials_provider == 'agency' %}selected{% endif %}>{{ _('agency_provides') }}</option>
+                                        <option value="collaboration" {% if brief.materials_provider == 'collaboration' %}selected{% endif %}>{{ _('collaboration') }}</option>
+                                    </select>
+                                </div>
+
+                                <!-- Copywriting Provider -->
+                                <div class="mb-3">
+                                    <label for="copywriting_provider" class="form-label">{{ _('copywriting_provider') }}</label>
+                                    <select class="form-select" id="copywriting_provider" name="copywriting_provider">
+                                        <option value="">{{ _('select_option') }}</option>
+                                        <option value="client" {% if brief.copywriting_provider == 'client' %}selected{% endif %}>{{ _('client_provides') }}</option>
+                                        <option value="agency" {% if brief.copywriting_provider == 'agency' %}selected{% endif %}>{{ _('agency_provides') }}</option>
+                                        <option value="collaboration" {% if brief.copywriting_provider == 'collaboration' %}selected{% endif %}>{{ _('collaboration') }}</option>
+                                    </select>
+                                </div>
+
+                                <!-- Communication Frequency -->
+                                <div class="mb-3">
+                                    <label for="communication_frequency" class="form-label">{{ _('communication_frequency') }}</label>
+                                    <select class="form-select" id="communication_frequency" name="communication_frequency">
+                                        <option value="">{{ _('select_option') }}</option>
+                                        <option value="weekly" {% if brief.communication_frequency == 'weekly' %}selected{% endif %}>{{ _('weekly') }}</option>
+                                        <option value="monthly" {% if brief.communication_frequency == 'monthly' %}selected{% endif %}>{{ _('monthly') }}</option>
+                                        <option value="milestones" {% if brief.communication_frequency == 'milestones' %}selected{% endif %}>{{ _('milestones') }}</option>
+                                        <option value="async" {% if brief.communication_frequency == 'async' %}selected{% endif %}>{{ _('async') }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('view_brief', brief_id=brief.id) }}" class="btn btn-secondary">{{ _('cancel') }}</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>{{ _('save_changes') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ _('edit_info') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>{{ _('important') }}:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>{{ _('edit_note_1') }}</li>
+                            <li>{{ _('edit_note_2') }}</li>
+                            <li>{{ _('edit_note_3') }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('current_status') }}</label>
+                        <p>
+                            <span class="badge 
+                                {% if brief.status == 'active' %}bg-success
+                                {% elif brief.status == 'closed' %}bg-danger
+                                {% else %}bg-warning
+                                {% endif %}">
+                                {{ brief.status.title() }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('proposals_received') }}</label>
+                        <p>{{ brief.proposals|length }} {{ _('proposals') }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('created_date') }}</label>
+                        <p>{{ brief.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
