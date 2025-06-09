@@ -529,6 +529,7 @@ def api_generate_brief():
 
 # Admin Routes
 @app.route('/admin')
+@app.route('/admin/dashboard')
 @superadmin_required
 def admin_dashboard():
     """Admin dashboard with statistics and overview"""
