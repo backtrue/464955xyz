@@ -403,6 +403,23 @@ def view_proposals(brief_id):
     
     return render_template('view_proposals.html', brief=brief, proposals=proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
 
+@app.route('/profile')
+@login_required
+def user_profile():
+    """User profile page with credit history and account details"""
+    # Get user's credit transaction history
+    credit_history = CreditTransaction.query.filter_by(user_id=current_user.id).order_by(CreditTransaction.created_at.desc()).limit(20).all()
+    
+    # Get user's brief and proposal counts
+    brief_count = Brief.query.filter_by(user_id=current_user.id).count()
+    proposal_count = Proposal.query.filter_by(user_id=current_user.id).count()
+    
+    return render_template('user_profile.html', 
+                         credit_history=credit_history,
+                         brief_count=brief_count,
+                         proposal_count=proposal_count,
+                         _=_, get_languages=get_languages, current_lang=get_current_language())
+
 # API Routes
 @app.route('/api/generate-brief', methods=['POST'])
 @login_required

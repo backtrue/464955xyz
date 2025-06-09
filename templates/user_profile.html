@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('user_profile') }} - 464955.xyz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>{{ _('user_profile') }}</h1>
+                <a href="{{ url_for('client_dashboard') if current_user.role == 'client' else url_for('pro_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>{{ _('back_to_dashboard') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Account Information -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ _('account_information') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('email') }}</label>
+                        <p class="fw-bold">{{ current_user.email }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('full_name') }}</label>
+                        <p>{{ current_user.full_name or '-' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('company') }}</label>
+                        <p>{{ current_user.company_name or '-' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('role') }}</label>
+                        <p>
+                            <span class="badge 
+                                {% if current_user.role == 'client' %}bg-primary
+                                {% elif current_user.role == 'pro' %}bg-success
+                                {% endif %}">
+                                {% if current_user.role == 'client' %}{{ _('client') }}
+                                {% elif current_user.role == 'pro' %}{{ _('professional') }}
+                                {% endif %}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted">{{ _('member_since') }}</label>
+                        <p>{{ current_user.created_at.strftime('%Y-%m-%d') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credit Balance -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ _('credit_balance') }}</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="display-4 text-primary mb-2">{{ current_user.credits }}</div>
+                    <p class="text-muted">{{ _('credits_available') }}</p>
+                    <div class="small text-muted">
+                        <p class="mb-1">• {{ _('brief_creation_cost') }}: 1 {{ _('credits') }}</p>
+                        <p class="mb-0">• {{ _('proposal_submission_cost') }}: 1 {{ _('credits') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ _('activity_summary') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h4 class="text-primary">{{ brief_count }}</h4>
+                                <p class="text-muted mb-0 small">{{ _('briefs_created') }}</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">{{ proposal_count }}</h4>
+                            <p class="text-muted mb-0 small">{{ _('proposals_submitted') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credit History -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ _('credit_history') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if credit_history %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{ _('date') }}</th>
+                                        <th>{{ _('transaction_type') }}</th>
+                                        <th>{{ _('amount') }}</th>
+                                        <th>{{ _('description') }}</th>
+                                        <th>{{ _('balance_after') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set running_balance = current_user.credits %}
+                                    {% for transaction in credit_history %}
+                                    <tr>
+                                        <td>{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if transaction.transaction_type == 'registration_bonus' %}bg-success
+                                                {% elif transaction.transaction_type == 'brief_creation' %}bg-danger
+                                                {% elif transaction.transaction_type == 'proposal_submission' %}bg-warning
+                                                {% elif transaction.transaction_type == 'admin_adjustment' %}bg-info
+                                                {% endif %}">
+                                                {% if transaction.transaction_type == 'registration_bonus' %}{{ _('registration_bonus') }}
+                                                {% elif transaction.transaction_type == 'brief_creation' %}{{ _('brief_creation') }}
+                                                {% elif transaction.transaction_type == 'proposal_submission' %}{{ _('proposal_submission') }}
+                                                {% elif transaction.transaction_type == 'admin_adjustment' %}{{ _('admin_adjustment') }}
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="{% if transaction.amount > 0 %}text-success{% else %}text-danger{% endif %}">
+                                                {{ '{:+d}'.format(transaction.amount) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ transaction.description or '-' }}</td>
+                                        <td>
+                                            {% set balance_after = running_balance %}
+                                            {% set running_balance = running_balance - transaction.amount %}
+                                            {{ balance_after }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">{{ _('no_transaction_history') }}</h5>
+                            <p class="text-muted">{{ _('transaction_history_help') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
