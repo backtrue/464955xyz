@@ -146,6 +146,12 @@ TRANSLATIONS = {
         'to_be_discussed': 'To be discussed',
         'not_specified': 'Not specified',
         'weeks_short': 'weeks',
+        'professional_dashboard': 'Professional Dashboard',
+        'available_briefs': 'Available Briefs',
+        'my_proposals': 'My Proposals',
+        'accepted': 'Accepted',
+        'preferred_platforms': 'Preferred Platforms',
+        'posted': 'Posted',
     },
     
     'zh': {

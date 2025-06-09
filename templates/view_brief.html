@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ brief.title }} - Marketing Hub{% endblock %}
+{% block title %}{{ brief.title }} - {{ _('marketing_hub') }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -27,14 +27,14 @@
                 <div class="card-body">
                     <!-- Description -->
                     <div class="mb-4">
-                        <h6><i class="fas fa-align-left me-2"></i>Project Description</h6>
+                        <h6><i class="fas fa-align-left me-2"></i>{{ _('project_description') }}</h6>
                         <p class="text-muted">{{ brief.description }}</p>
                     </div>
 
                     <!-- Marketing Goals -->
                     {% if brief.marketing_goals %}
                     <div class="mb-4">
-                        <h6><i class="fas fa-bullseye me-2"></i>Marketing Goals</h6>
+                        <h6><i class="fas fa-bullseye me-2"></i>{{ _('marketing_goals') }}</h6>
                         <p class="text-muted">{{ brief.marketing_goals }}</p>
                     </div>
                     {% endif %}
@@ -42,7 +42,7 @@
                     <!-- Target Audience -->
                     {% if brief.target_audience %}
                     <div class="mb-4">
-                        <h6><i class="fas fa-users me-2"></i>Target Audience</h6>
+                        <h6><i class="fas fa-users me-2"></i>{{ _('target_audience') }}</h6>
                         <p class="text-muted">{{ brief.target_audience }}</p>
                     </div>
                     {% endif %}
@@ -50,7 +50,7 @@
                     <!-- Suggested Items -->
                     {% if brief.suggested_items %}
                     <div class="mb-4">
-                        <h6><i class="fas fa-list-check me-2"></i>Suggested Services</h6>
+                        <h6><i class="fas fa-list-check me-2"></i>{{ _('suggested_services') }}</h6>
                         <div class="d-flex flex-wrap gap-2">
                             {% for item in brief.suggested_items.split(', ') %}
                                 <span class="badge bg-primary">{{ item.strip() }}</span>
@@ -62,7 +62,7 @@
                     <!-- Original Input (for clients only) -->
                     {% if current_user.role == 'client' and brief.user_id == current_user.id %}
                     <div class="mb-4">
-                        <h6><i class="fas fa-quote-left me-2"></i>Original Request</h6>
+                        <h6><i class="fas fa-quote-left me-2"></i>{{ _('original_request') }}</h6>
                         <div class="card bg-secondary">
                             <div class="card-body">
                                 <p class="mb-0 font-monospace small">{{ brief.raw_input }}</p>
@@ -75,11 +75,11 @@
                     <div class="d-flex gap-2">
                         {% if current_user.role == 'pro' and brief.status == 'active' and brief.user_id != current_user.id %}
                             <a href="{{ url_for('submit_proposal', brief_id=brief.id) }}" class="btn btn-primary">
-                                <i class="fas fa-paper-plane me-2"></i>Submit Proposal
+                                <i class="fas fa-paper-plane me-2"></i>{{ _('submit_proposal') }}
                             </a>
                         {% elif current_user.role == 'client' and brief.user_id == current_user.id %}
                             <a href="{{ url_for('view_proposals', brief_id=brief.id) }}" class="btn btn-primary">
-                                <i class="fas fa-eye me-2"></i>View Proposals ({{ proposals|length }})
+                                <i class="fas fa-eye me-2"></i>{{ _('view_proposals') }} ({{ proposals|length }})
                             </a>
                         {% endif %}
                     </div>

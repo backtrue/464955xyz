@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Create Brief - Marketing Hub{% endblock %}
+{% block title %}{{ _('create_brief') }} - {{ _('marketing_hub') }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -8,15 +8,15 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fas fa-plus me-2"></i>Create Marketing Brief</h3>
-                    <p class="mb-0 text-muted">Describe your marketing needs in natural language. Our system will automatically generate a structured brief.</p>
+                    <h3><i class="fas fa-plus me-2"></i>{{ _('create_marketing_brief') }}</h3>
+                    <p class="mb-0 text-muted">{{ _('describe_needs') }}</p>
                 </div>
                 <div class="card-body p-4">
                     <form method="POST">
                         <!-- Instructions -->
                         <div class="alert alert-info">
                             <i class="fas fa-lightbulb me-2"></i>
-                            <strong>Tips for better results:</strong>
+                            <strong>{{ _('tips_for_better_results') }}:</strong>
                             <ul class="mb-0 mt-2">
                                 <li>Mention your business type and target audience</li>
                                 <li>Specify platforms you're interested in (Instagram, Facebook, Google Ads, etc.)</li>
@@ -29,7 +29,7 @@
                         <!-- Natural Language Input -->
                         <div class="mb-4">
                             <label for="raw_input" class="form-label">
-                                <strong>Describe Your Marketing Needs</strong>
+                                <strong>{{ _('describe_your_marketing_needs') }}</strong>
                             </label>
                             <textarea class="form-control" id="raw_input" name="raw_input" rows="8" 
                                     placeholder="Example: I run a fitness studio and need help with social media marketing to attract new members. I'm particularly interested in Instagram and Facebook campaigns to reach young professionals aged 25-40 in my local area. My budget is around $2,000-3,000 per month, and I want to focus on increasing brand awareness and generating leads for trial memberships. I'd like to start with a 2-month campaign to test effectiveness..." 
@@ -39,7 +39,7 @@
 
                         <!-- Example Prompts -->
                         <div class="mb-4">
-                            <h6>Need inspiration? Try these examples:</h6>
+                            <h6>{{ _('need_inspiration') }}</h6>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card bg-secondary mb-2">
@@ -65,10 +65,10 @@
                         <!-- Action Buttons -->
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('client_dashboard') }}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                                <i class="fas fa-arrow-left me-2"></i>{{ _('back_to_dashboard') }}
                             </a>
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-magic me-2"></i>Generate Brief
+                                <i class="fas fa-magic me-2"></i>{{ _('generate_brief') }}
                             </button>
                         </div>
                     </form>
