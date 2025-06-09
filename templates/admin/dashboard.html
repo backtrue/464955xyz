@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('admin_dashboard') }} - 464955.xyz</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">464955.xyz</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        {{ _('admin_panel') }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">{{ _('dashboard') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">{{ _('users') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_briefs') }}">{{ _('briefs') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('index') }}">{{ _('back_to_site') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('logout') }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">{{ _('admin_dashboard') }}</h1>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ stats.total_users }}</h4>
+                                <p class="card-text">{{ _('total_users') }}</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i data-feather="users" class="feather-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ stats.total_clients }}</h4>
+                                <p class="card-text">{{ _('clients') }}</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i data-feather="user" class="feather-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ stats.total_professionals }}</h4>
+                                <p class="card-text">{{ _('professionals') }}</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i data-feather="briefcase" class="feather-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ stats.total_briefs }}</h4>
+                                <p class="card-text">{{ _('briefs') }}</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i data-feather="file-text" class="feather-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('recent_users') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if stats.recent_users %}
+                            <div class="list-group list-group-flush">
+                                {% for user in stats.recent_users %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ user.email }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ user.role.title() }} • {{ user.created_at.strftime('%Y-%m-%d') }}</small>
+                                    </div>
+                                    <a href="{{ url_for('admin_user_detail', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">{{ _('view') }}</a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">{{ _('no_recent_users') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('recent_briefs') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if stats.recent_briefs %}
+                            <div class="list-group list-group-flush">
+                                {% for brief in stats.recent_briefs %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ brief.title }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ brief.service_type.replace('_', ' ').title() }} • {{ brief.created_at.strftime('%Y-%m-%d') }}</small>
+                                    </div>
+                                    <a href="{{ url_for('admin_brief_detail', brief_id=brief.id) }}" class="btn btn-sm btn-outline-primary">{{ _('view') }}</a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">{{ _('no_recent_briefs') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

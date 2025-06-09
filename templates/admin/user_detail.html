@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('user_details') }} - 464955.xyz</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">464955.xyz</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        {{ _('admin_panel') }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">{{ _('dashboard') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">{{ _('users') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_briefs') }}">{{ _('briefs') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('index') }}">{{ _('back_to_site') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('logout') }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Back Navigation -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary">
+                    <i data-feather="arrow-left" class="feather-sm"></i> {{ _('back_to_users') }}
+                </a>
+            </div>
+        </div>
+
+        <!-- User Information -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('user_information') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('email') }}</label>
+                            <p class="fw-bold">{{ user.email }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('full_name') }}</label>
+                            <p>{{ user.full_name or '-' }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('company') }}</label>
+                            <p>{{ user.company_name or '-' }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('role') }}</label>
+                            <p>
+                                <span class="badge 
+                                    {% if user.role == 'client' %}bg-primary
+                                    {% elif user.role == 'pro' %}bg-success
+                                    {% elif user.role == 'superadmin' %}bg-danger
+                                    {% endif %}">
+                                    {{ user.role.title() }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('member_since') }}</label>
+                            <p>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                        
+                        <!-- Role Management -->
+                        {% if not user.is_superadmin() %}
+                        <div class="mb-3">
+                            <form action="{{ url_for('admin_toggle_user_role', user_id=user.id) }}" method="POST" onsubmit="return confirm('{{ _('confirm_role_change') }}')">
+                                {% if user.role == 'client' %}
+                                    <button type="submit" class="btn btn-warning">
+                                        <i data-feather="briefcase" class="feather-sm"></i> {{ _('change_to_professional') }}
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-primary">
+                                        <i data-feather="user" class="feather-sm"></i> {{ _('change_to_client') }}
+                                    </button>
+                                {% endif %}
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <!-- User Activity -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('activity_summary') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="border-end">
+                                    <h3 class="text-primary">{{ user_briefs|length }}</h3>
+                                    <p class="text-muted mb-0">{{ _('briefs_created') }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border-end">
+                                    <h3 class="text-success">{{ user_proposals|length }}</h3>
+                                    <p class="text-muted mb-0">{{ _('proposals_submitted') }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="text-info">
+                                    {{ user_proposals|selectattr('status', 'equalto', 'accepted')|list|length }}
+                                </h3>
+                                <p class="text-muted mb-0">{{ _('proposals_accepted') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Briefs -->
+                {% if user_briefs %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('briefs_created') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>{{ _('title') }}</th>
+                                        <th>{{ _('service_type') }}</th>
+                                        <th>{{ _('status') }}</th>
+                                        <th>{{ _('created_date') }}</th>
+                                        <th>{{ _('actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for brief in user_briefs %}
+                                    <tr>
+                                        <td>{{ brief.title }}</td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ brief.service_type.replace('_', ' ').title() }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if brief.status == 'active' %}bg-success
+                                                {% elif brief.status == 'closed' %}bg-danger
+                                                {% else %}bg-warning
+                                                {% endif %}">
+                                                {{ brief.status.title() }}
+                                            </span>
+                                        </td>
+                                        <td>{{ brief.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('admin_brief_detail', brief_id=brief.id) }}" class="btn btn-sm btn-outline-primary">{{ _('view') }}</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Proposals -->
+                {% if user_proposals %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('proposals_submitted') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>{{ _('brief') }}</th>
+                                        <th>{{ _('price') }}</th>
+                                        <th>{{ _('status') }}</th>
+                                        <th>{{ _('submitted_date') }}</th>
+                                        <th>{{ _('actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for proposal in user_proposals %}
+                                    <tr>
+                                        <td>{{ proposal.brief.title }}</td>
+                                        <td>${{ "{:,}".format(proposal.price) }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if proposal.status == 'accepted' %}bg-success
+                                                {% elif proposal.status == 'rejected' %}bg-danger
+                                                {% else %}bg-warning
+                                                {% endif %}">
+                                                {{ proposal.status.title() }}
+                                            </span>
+                                        </td>
+                                        <td>{{ proposal.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('admin_brief_detail', brief_id=proposal.brief_id) }}" class="btn btn-sm btn-outline-primary">{{ _('view_brief') }}</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

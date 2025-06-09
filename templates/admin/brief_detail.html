@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('brief_details') }} - 464955.xyz</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">464955.xyz</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        {{ _('admin_panel') }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">{{ _('dashboard') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">{{ _('users') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_briefs') }}">{{ _('briefs') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('index') }}">{{ _('back_to_site') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('logout') }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Back Navigation -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a href="{{ url_for('admin_briefs') }}" class="btn btn-outline-secondary">
+                    <i data-feather="arrow-left" class="feather-sm"></i> {{ _('back_to_briefs') }}
+                </a>
+            </div>
+        </div>
+
+        <!-- Brief Information -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">{{ brief.title }}</h5>
+                        <div>
+                            <span class="badge 
+                                {% if brief.status == 'active' %}bg-success
+                                {% elif brief.status == 'closed' %}bg-danger
+                                {% elif brief.status == 'in_progress' %}bg-warning
+                                {% endif %} me-2">
+                                {{ brief.status.title() }}
+                            </span>
+                            <span class="badge bg-secondary">{{ brief.service_type.replace('_', ' ').title() }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6>{{ _('description') }}</h6>
+                            <p>{{ brief.description }}</p>
+                        </div>
+                        
+                        {% if brief.structured_brief %}
+                        <div class="mb-4">
+                            <h6>{{ _('structured_brief') }}</h6>
+                            <div class="bg-dark p-3 rounded">
+                                <pre class="text-light mb-0">{{ brief.structured_brief }}</pre>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Brief Details Grid -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">{{ _('budget_range') }}</label>
+                                    <p>
+                                        {% if brief.budget_min and brief.budget_max %}
+                                            ${{ "{:,}".format(brief.budget_min) }} - ${{ "{:,}".format(brief.budget_max) }}
+                                        {% else %}
+                                            {{ _('not_specified') }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">{{ _('duration') }}</label>
+                                    <p>{{ brief.duration_weeks or _('not_specified') }} {% if brief.duration_weeks %}{{ _('weeks') }}{% endif %}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">{{ _('platform_preference') }}</label>
+                                    <p>{{ brief.platform_preference or _('not_specified') }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">{{ _('target_audience') }}</label>
+                                    <p>{{ brief.target_audience or _('not_specified') }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">{{ _('marketing_goals') }}</label>
+                                    <p>{{ brief.marketing_goals or _('not_specified') }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">{{ _('communication_frequency') }}</label>
+                                    <p>{{ brief.communication_frequency.replace('_', ' ').title() if brief.communication_frequency else _('not_specified') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proposals -->
+                {% if proposals %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('proposals') }} ({{ proposals|length }})</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for proposal in proposals %}
+                        <div class="border rounded p-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong>{{ proposal.professional.email }}</strong>
+                                    <span class="badge 
+                                        {% if proposal.status == 'accepted' %}bg-success
+                                        {% elif proposal.status == 'rejected' %}bg-danger
+                                        {% else %}bg-warning
+                                        {% endif %} ms-2">
+                                        {{ proposal.status.title() }}
+                                    </span>
+                                </div>
+                                <div class="text-end">
+                                    <strong class="text-primary">${{ "{:,}".format(proposal.price) }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ proposal.estimated_days }} {{ _('days') }}</small>
+                                </div>
+                            </div>
+                            <p class="mb-2">{{ proposal.message }}</p>
+                            {% if proposal.sample_links %}
+                            <div class="mb-2">
+                                <small class="text-muted">{{ _('sample_links') }}:</small>
+                                <p class="small">{{ proposal.sample_links }}</p>
+                            </div>
+                            {% endif %}
+                            <small class="text-muted">{{ _('submitted') }}: {{ proposal.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i data-feather="inbox" class="feather-lg text-muted mb-3"></i>
+                        <h5 class="text-muted">{{ _('no_proposals_yet') }}</h5>
+                        <p class="text-muted">{{ _('no_proposals_submitted') }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-4">
+                <!-- Client Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('client_information') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('email') }}</label>
+                            <p>{{ brief.client.email }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('full_name') }}</label>
+                            <p>{{ brief.client.full_name or '-' }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('company') }}</label>
+                            <p>{{ brief.client.company_name or '-' }}</p>
+                        </div>
+                        <a href="{{ url_for('admin_user_detail', user_id=brief.client.id) }}" class="btn btn-sm btn-outline-primary">
+                            {{ _('view_client_profile') }}
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Brief Management -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{{ _('brief_management') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label text-muted">{{ _('created_date') }}</label>
+                            <p>{{ brief.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                        
+                        <!-- Status Management -->
+                        <div class="d-grid gap-2">
+                            {% if brief.status == 'active' %}
+                                <form action="{{ url_for('admin_close_brief', brief_id=brief.id) }}" method="POST" onsubmit="return confirm('{{ _('confirm_close_brief') }}')">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i data-feather="x-circle" class="feather-sm"></i> {{ _('close_brief') }}
+                                    </button>
+                                </form>
+                            {% elif brief.status == 'closed' %}
+                                <form action="{{ url_for('admin_reopen_brief', brief_id=brief.id) }}" method="POST" onsubmit="return confirm('{{ _('confirm_reopen_brief') }}')">
+                                    <button type="submit" class="btn btn-success">
+                                        <i data-feather="play-circle" class="feather-sm"></i> {{ _('reopen_brief') }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

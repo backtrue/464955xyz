@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('manage_users') }} - 464955.xyz</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">464955.xyz</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        {{ _('admin_panel') }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">{{ _('dashboard') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">{{ _('users') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_briefs') }}">{{ _('briefs') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('index') }}">{{ _('back_to_site') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('logout') }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>{{ _('manage_users') }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="search" class="form-label">{{ _('search') }}</label>
+                        <input type="text" class="form-control" id="search" name="search" value="{{ search }}" placeholder="{{ _('search_users_placeholder') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="role" class="form-label">{{ _('role') }}</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="">{{ _('all_roles') }}</option>
+                            <option value="client" {% if role_filter == 'client' %}selected{% endif %}>{{ _('client') }}</option>
+                            <option value="pro" {% if role_filter == 'pro' %}selected{% endif %}>{{ _('professional') }}</option>
+                            <option value="superadmin" {% if role_filter == 'superadmin' %}selected{% endif %}>{{ _('superadmin') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">{{ _('search') }}</button>
+                        <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">{{ _('clear') }}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-body">
+                {% if users.items %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('email') }}</th>
+                                    <th>{{ _('full_name') }}</th>
+                                    <th>{{ _('role') }}</th>
+                                    <th>{{ _('company') }}</th>
+                                    <th>{{ _('created_date') }}</th>
+                                    <th>{{ _('actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users.items %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ user.email }}</strong>
+                                        {% if user.is_superadmin() %}
+                                        <span class="badge bg-danger ms-2">{{ _('superadmin') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user.full_name or '-' }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if user.role == 'client' %}bg-primary
+                                            {% elif user.role == 'pro' %}bg-success
+                                            {% elif user.role == 'superadmin' %}bg-danger
+                                            {% endif %}">
+                                            {{ user.role.title() }}
+                                        </span>
+                                    </td>
+                                    <td>{{ user.company_name or '-' }}</td>
+                                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin_user_detail', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i data-feather="eye" class="feather-sm"></i> {{ _('view') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if users.pages > 1 %}
+                    <nav aria-label="User pagination">
+                        <ul class="pagination justify-content-center">
+                            {% if users.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('admin_users', page=users.prev_num, search=search, role=role_filter) }}">{{ _('previous') }}</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page_num in users.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != users.page %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('admin_users', page=page_num, search=search, role=role_filter) }}">{{ page_num }}</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">…</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if users.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('admin_users', page=users.next_num, search=search, role=role_filter) }}">{{ _('next') }}</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i data-feather="users" class="feather-lg text-muted mb-3"></i>
+                        <h5 class="text-muted">{{ _('no_users_found') }}</h5>
+                        <p class="text-muted">{{ _('try_different_search') }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>

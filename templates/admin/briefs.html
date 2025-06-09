@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('manage_briefs') }} - 464955.xyz</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">464955.xyz</a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        {{ _('admin_panel') }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}">{{ _('dashboard') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">{{ _('users') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin_briefs') }}">{{ _('briefs') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('index') }}">{{ _('back_to_site') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">{{ _('logout') }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">{{ _('manage_briefs') }}</h1>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">{{ _('search') }}</label>
+                        <input type="text" class="form-control" id="search" name="search" value="{{ search }}" placeholder="{{ _('search_briefs_placeholder') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="service" class="form-label">{{ _('service_type') }}</label>
+                        <select class="form-select" id="service" name="service">
+                            <option value="">{{ _('all_services') }}</option>
+                            <option value="meta_ads" {% if service_filter == 'meta_ads' %}selected{% endif %}>Meta Ads</option>
+                            <option value="google_ads" {% if service_filter == 'google_ads' %}selected{% endif %}>Google Ads</option>
+                            <option value="seo" {% if service_filter == 'seo' %}selected{% endif %}>SEO</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="status" class="form-label">{{ _('status') }}</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">{{ _('all_status') }}</option>
+                            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>{{ _('active') }}</option>
+                            <option value="closed" {% if status_filter == 'closed' %}selected{% endif %}>{{ _('closed') }}</option>
+                            <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>{{ _('in_progress') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">{{ _('search') }}</button>
+                        <a href="{{ url_for('admin_briefs') }}" class="btn btn-secondary">{{ _('clear') }}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Briefs Table -->
+        <div class="card">
+            <div class="card-body">
+                {% if briefs.items %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('title') }}</th>
+                                    <th>{{ _('client') }}</th>
+                                    <th>{{ _('service_type') }}</th>
+                                    <th>{{ _('budget') }}</th>
+                                    <th>{{ _('status') }}</th>
+                                    <th>{{ _('proposals') }}</th>
+                                    <th>{{ _('created_date') }}</th>
+                                    <th>{{ _('actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for brief in briefs.items %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ brief.title }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ brief.description[:50] }}{% if brief.description|length > 50 %}...{% endif %}</small>
+                                    </td>
+                                    <td>{{ brief.client.email }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ brief.service_type.replace('_', ' ').title() }}</span>
+                                    </td>
+                                    <td>
+                                        {% if brief.budget_min and brief.budget_max %}
+                                            ${{ "{:,}".format(brief.budget_min) }} - ${{ "{:,}".format(brief.budget_max) }}
+                                        {% else %}
+                                            {{ _('not_specified') }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if brief.status == 'active' %}bg-success
+                                            {% elif brief.status == 'closed' %}bg-danger
+                                            {% elif brief.status == 'in_progress' %}bg-warning
+                                            {% endif %}">
+                                            {{ brief.status.title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ brief.proposals|length }}</span>
+                                    </td>
+                                    <td>{{ brief.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin_brief_detail', brief_id=brief.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i data-feather="eye" class="feather-sm"></i> {{ _('view') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if briefs.pages > 1 %}
+                    <nav aria-label="Brief pagination">
+                        <ul class="pagination justify-content-center">
+                            {% if briefs.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('admin_briefs', page=briefs.prev_num, search=search, status=status_filter, service=service_filter) }}">{{ _('previous') }}</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page_num in briefs.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num != briefs.page %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('admin_briefs', page=page_num, search=search, status=status_filter, service=service_filter) }}">{{ page_num }}</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">…</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if briefs.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('admin_briefs', page=briefs.next_num, search=search, status=status_filter, service=service_filter) }}">{{ _('next') }}</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i data-feather="file-text" class="feather-lg text-muted mb-3"></i>
+                        <h5 class="text-muted">{{ _('no_briefs_found') }}</h5>
+                        <p class="text-muted">{{ _('try_different_search') }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>
