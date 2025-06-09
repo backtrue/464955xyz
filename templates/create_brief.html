@@ -113,6 +113,102 @@
                             </div>
                         </div>
 
+                        <!-- AI Brief Generation -->
+                        <div class="mb-4">
+                            <button type="button" class="btn btn-info btn-lg w-100" id="generateBriefBtn" onclick="generateStructuredBrief()">
+                                <i class="fas fa-magic me-2"></i>{{ _('generate_structured_brief') }}
+                            </button>
+                            <div class="form-text text-center mt-2">{{ _('ai_brief_help') }}</div>
+                        </div>
+
+                        <!-- Generated Brief Display -->
+                        <div id="generatedBriefSection" class="mb-4" style="display: none;">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="fas fa-file-alt me-2"></i>{{ _('generated_brief_title') }}</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="generatedBriefContent" class="mb-3"></div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-primary" onclick="editBrief()">
+                                            <i class="fas fa-edit me-2"></i>{{ _('edit_brief') }}
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="regenerateBrief()">
+                                            <i class="fas fa-redo me-2"></i>{{ _('regenerate_brief') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Follow-up Questions -->
+                        <div id="followupQuestionsSection" class="mb-4" style="display: none;">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning text-dark">
+                                    <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i>{{ _('additional_questions') }}</h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Materials Question -->
+                                    <div class="mb-4">
+                                        <h6>🟧 {{ _('materials_question') }}</h6>
+                                        <p class="text-muted">{{ _('materials_description') }}</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="materials_provider" id="materials_client" value="client">
+                                            <label class="form-check-label" for="materials_client">{{ _('materials_client') }}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="materials_provider" id="materials_agency" value="agency">
+                                            <label class="form-check-label" for="materials_agency">{{ _('materials_agency') }}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="materials_provider" id="materials_collaboration" value="collaboration">
+                                            <label class="form-check-label" for="materials_collaboration">{{ _('materials_collaboration') }}</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Copywriting Question -->
+                                    <div class="mb-4">
+                                        <h6>🟧 {{ _('copywriting_question') }}</h6>
+                                        <p class="text-muted">{{ _('copywriting_description') }}</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="copywriting_provider" id="copywriting_client" value="client">
+                                            <label class="form-check-label" for="copywriting_client">{{ _('copywriting_client') }}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="copywriting_provider" id="copywriting_agency" value="agency">
+                                            <label class="form-check-label" for="copywriting_agency">{{ _('copywriting_agency') }}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="copywriting_provider" id="copywriting_collaboration" value="collaboration">
+                                            <label class="form-check-label" for="copywriting_collaboration">{{ _('copywriting_collaboration') }}</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Communication Question -->
+                                    <div class="mb-4">
+                                        <h6>🟧 {{ _('communication_question') }}</h6>
+                                        <p class="text-muted">{{ _('communication_description') }}</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="communication_frequency" id="comm_weekly" value="weekly">
+                                            <label class="form-check-label" for="comm_weekly">{{ _('comm_weekly') }}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="communication_frequency" id="comm_monthly" value="monthly">
+                                            <label class="form-check-label" for="comm_monthly">{{ _('comm_monthly') }}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="communication_frequency" id="comm_milestones" value="milestones">
+                                            <label class="form-check-label" for="comm_milestones">{{ _('comm_milestones') }}</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="communication_frequency" id="comm_async" value="async">
+                                            <label class="form-check-label" for="comm_async">{{ _('comm_async') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Action Buttons -->
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('client_dashboard') }}" class="btn btn-secondary">
@@ -135,5 +231,158 @@
 function fillExample(text) {
     document.getElementById('raw_input').value = text.replace(/"/g, '');
 }
+
+let generatedBriefText = '';
+
+async function generateStructuredBrief() {
+    const rawInput = document.getElementById('raw_input').value.trim();
+    const serviceType = document.querySelector('input[name="service_type"]:checked');
+    
+    if (!rawInput || rawInput.length < 50) {
+        alert('{{ _("textarea_help_text") }}');
+        return;
+    }
+    
+    if (!serviceType) {
+        alert('請選擇服務類型');
+        return;
+    }
+    
+    const generateBtn = document.getElementById('generateBriefBtn');
+    const originalText = generateBtn.innerHTML;
+    
+    // Show loading state
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>正在生成中...';
+    
+    try {
+        const response = await fetch('/api/generate-brief', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                raw_input: rawInput,
+                service_type: serviceType.value
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            generatedBriefText = data.structured_brief;
+            document.getElementById('generatedBriefContent').innerHTML = 
+                '<pre style="white-space: pre-wrap; font-family: inherit;">' + 
+                data.structured_brief + 
+                '</pre>';
+            
+            // Show generated brief section
+            document.getElementById('generatedBriefSection').style.display = 'block';
+            
+            // Show follow-up questions
+            document.getElementById('followupQuestionsSection').style.display = 'block';
+            
+            // Scroll to generated content
+            document.getElementById('generatedBriefSection').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        } else {
+            alert('生成失敗：' + data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('網路錯誤，請稍後再試');
+    } finally {
+        // Reset button
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = originalText;
+    }
+}
+
+function editBrief() {
+    const content = document.getElementById('generatedBriefContent');
+    const currentText = generatedBriefText;
+    
+    content.innerHTML = `
+        <div class="mb-3">
+            <textarea class="form-control" rows="15" id="editBriefTextarea">${currentText}</textarea>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-success" onclick="saveBriefEdit()">
+                <i class="fas fa-save me-2"></i>儲存
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="cancelBriefEdit()">
+                <i class="fas fa-times me-2"></i>取消
+            </button>
+        </div>
+    `;
+}
+
+function saveBriefEdit() {
+    const newText = document.getElementById('editBriefTextarea').value;
+    generatedBriefText = newText;
+    
+    document.getElementById('generatedBriefContent').innerHTML = 
+        '<pre style="white-space: pre-wrap; font-family: inherit;">' + 
+        newText + 
+        '</pre>';
+}
+
+function cancelBriefEdit() {
+    document.getElementById('generatedBriefContent').innerHTML = 
+        '<pre style="white-space: pre-wrap; font-family: inherit;">' + 
+        generatedBriefText + 
+        '</pre>';
+}
+
+function regenerateBrief() {
+    if (confirm('確定要重新生成簡介嗎？這將覆蓋目前的內容。')) {
+        generateStructuredBrief();
+    }
+}
+
+// Override form submission to include generated brief and follow-up answers
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (generatedBriefText) {
+            // Add hidden field for structured brief
+            const hiddenBrief = document.createElement('input');
+            hiddenBrief.type = 'hidden';
+            hiddenBrief.name = 'structured_brief';
+            hiddenBrief.value = generatedBriefText;
+            form.appendChild(hiddenBrief);
+            
+            // Add follow-up answers
+            const materialsAnswer = document.querySelector('input[name="materials_provider"]:checked');
+            if (materialsAnswer) {
+                const hiddenMaterials = document.createElement('input');
+                hiddenMaterials.type = 'hidden';
+                hiddenMaterials.name = 'materials_provider';
+                hiddenMaterials.value = materialsAnswer.value;
+                form.appendChild(hiddenMaterials);
+            }
+            
+            const copywritingAnswer = document.querySelector('input[name="copywriting_provider"]:checked');
+            if (copywritingAnswer) {
+                const hiddenCopywriting = document.createElement('input');
+                hiddenCopywriting.type = 'hidden';
+                hiddenCopywriting.name = 'copywriting_provider';
+                hiddenCopywriting.value = copywritingAnswer.value;
+                form.appendChild(hiddenCopywriting);
+            }
+            
+            const commAnswer = document.querySelector('input[name="communication_frequency"]:checked');
+            if (commAnswer) {
+                const hiddenComm = document.createElement('input');
+                hiddenComm.type = 'hidden';
+                hiddenComm.name = 'communication_frequency';
+                hiddenComm.value = commAnswer.value;
+                form.appendChild(hiddenComm);
+            }
+        }
+    });
+});
 </script>
 {% endblock %}
