@@ -17,8 +17,8 @@ TRANSLATIONS = {
         'logout': 'Logout',
         
         # Landing page
-        'welcome_title': 'Welcome to Marketing Hub',
-        'welcome_subtitle': 'Connect clients with marketing professionals through our intelligent brief generation and proposal system.',
+        'welcome_title': 'Welcome to 464955.xyz',
+        'welcome_subtitle': '4649 (よろしく) = Let\'s work together, 55 = You and me, achieving together. A digital bulletin board that tells stories through marketing and matches through data.',
         'get_started': 'Get Started',
         'sign_in': 'Sign In',
         'go_to_dashboard': 'Go to Dashboard',
@@ -164,8 +164,8 @@ TRANSLATIONS = {
         'logout': '登出',
         
         # Landing page
-        'welcome_title': '歡迎來到行銷媒合平台',
-        'welcome_subtitle': '透過我們智能的專案描述生成和提案系統，連接客戶與行銷專業人士。',
+        'welcome_title': '歡迎來到 464955.xyz',
+        'welcome_subtitle': '4649（よろしく）= 讓我們一起工作，55 = 是你，也是我，我們互相成就。用行銷說故事，也用數據媒合的數位佈告欄。',
         'get_started': '開始使用',
         'sign_in': '登入',
         'go_to_dashboard': '前往控制台',
@@ -311,8 +311,8 @@ TRANSLATIONS = {
         'logout': 'ログアウト',
         
         # Landing page
-        'welcome_title': 'マーケティングハブへようこそ',
-        'welcome_subtitle': 'インテリジェントなブリーフ生成とプロポーザルシステムを通じて、クライアントとマーケティング専門家を繋げます。',
+        'welcome_title': '464955.xyz へようこそ',
+        'welcome_subtitle': '4649（よろしく）= Let\'s work together、55 = あなたも私も、お互いに成長し合う。マーケティングでストーリーを語り、データでマッチングするデジタル掲示板。',
         'get_started': '始める',
         'sign_in': 'サインイン',
         'go_to_dashboard': 'ダッシュボードへ',
