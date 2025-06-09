@@ -149,7 +149,7 @@ def pro_dashboard():
     # Get user's proposals
     my_proposals = Proposal.query.filter_by(user_id=current_user.id).order_by(Proposal.created_at.desc()).all()
     
-    return render_template('pro_dashboard.html', active_briefs=active_briefs, my_proposals=my_proposals)
+    return render_template('pro_dashboard.html', active_briefs=active_briefs, my_proposals=my_proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/client/create-brief', methods=['GET', 'POST'])
 @login_required
@@ -164,11 +164,11 @@ def create_brief():
         
         if not raw_input:
             flash('Please describe your marketing needs.', 'error')
-            return render_template('create_brief.html')
+            return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         if len(raw_input) < 50:
             flash('Please provide more detailed information (at least 50 characters).', 'error')
-            return render_template('create_brief.html')
+            return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         try:
             # Generate structured brief from natural language input
@@ -200,7 +200,7 @@ def create_brief():
             logging.error(f"Brief creation error: {e}")
             flash('Failed to create brief. Please try again.', 'error')
     
-    return render_template('create_brief.html')
+    return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/brief/<int:brief_id>')
 @login_required
@@ -221,7 +221,7 @@ def view_brief(brief_id):
     if current_user.role == 'client' and brief.user_id == current_user.id:
         proposals = Proposal.query.filter_by(brief_id=brief_id).order_by(Proposal.created_at.desc()).all()
     
-    return render_template('view_brief.html', brief=brief, proposals=proposals)
+    return render_template('view_brief.html', brief=brief, proposals=proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/brief/<int:brief_id>/propose', methods=['GET', 'POST'])
 @login_required
@@ -253,7 +253,7 @@ def submit_proposal(brief_id):
         # Validation
         if not price or not message or not estimated_days:
             flash('Price, message, and estimated days are required.', 'error')
-            return render_template('submit_proposal.html', brief=brief)
+            return render_template('submit_proposal.html', brief=brief, _=_, get_languages=get_languages, current_lang=get_current_language())
         
         try:
             price = int(price)
@@ -264,11 +264,11 @@ def submit_proposal(brief_id):
                 
         except ValueError:
             flash('Please enter valid numbers for price and estimated days.', 'error')
-            return render_template('submit_proposal.html', brief=brief)
+            return render_template('submit_proposal.html', brief=brief, _=_, get_languages=get_languages, current_lang=get_current_language())
         
         if len(message) < 100:
             flash('Please provide a more detailed proposal (at least 100 characters).', 'error')
-            return render_template('submit_proposal.html', brief=brief)
+            return render_template('submit_proposal.html', brief=brief, _=_, get_languages=get_languages, current_lang=get_current_language())
         
         try:
             # Create proposal
@@ -292,7 +292,7 @@ def submit_proposal(brief_id):
             logging.error(f"Proposal submission error: {e}")
             flash('Failed to submit proposal. Please try again.', 'error')
     
-    return render_template('submit_proposal.html', brief=brief)
+    return render_template('submit_proposal.html', brief=brief, _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/client/proposals/<int:brief_id>')
 @login_required
@@ -311,7 +311,7 @@ def view_proposals(brief_id):
     
     proposals = Proposal.query.filter_by(brief_id=brief_id).order_by(Proposal.created_at.desc()).all()
     
-    return render_template('view_proposals.html', brief=brief, proposals=proposals)
+    return render_template('view_proposals.html', brief=brief, proposals=proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.errorhandler(404)
 def not_found_error(error):
