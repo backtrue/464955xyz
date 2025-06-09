@@ -76,6 +76,24 @@
                                 <div class="card h-100 border-primary">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ brief.title }}</h5>
+                                        
+                                        <!-- Service Type Badge -->
+                                        {% if brief.service_type %}
+                                        <div class="mb-2">
+                                            <span class="badge bg-primary">
+                                                {% if brief.service_type == 'meta_ads' %}
+                                                    {{ _('meta_ads_service') }}
+                                                {% elif brief.service_type == 'google_ads' %}
+                                                    {{ _('google_ads_service') }}
+                                                {% elif brief.service_type == 'seo' %}
+                                                    {{ _('seo_service') }}
+                                                {% else %}
+                                                    {{ brief.service_type }}
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        {% endif %}
+                                        
                                         <p class="card-text">{{ brief.description[:150] }}{% if brief.description|length > 150 %}...{% endif %}</p>
                                         
                                         <div class="mb-2">
