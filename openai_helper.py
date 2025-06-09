@@ -85,8 +85,11 @@ def generate_structured_brief(raw_input, service_type):
             temperature=0.7
         )
         
-        structured_brief = response.choices[0].message.content.strip()
-        return structured_brief
+        structured_brief = response.choices[0].message.content
+        if structured_brief:
+            return structured_brief.strip()
+        else:
+            return "抱歉，無法生成結構化簡介。"
         
     except Exception as e:
         logging.error(f"OpenAI API error: {e}")

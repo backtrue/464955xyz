@@ -37,6 +37,7 @@ class Brief(db.Model):
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
     raw_input = db.Column(db.Text, nullable=False)  # Original natural language input
+    structured_brief = db.Column(db.Text, nullable=True)  # AI-generated structured brief
     service_type = db.Column(db.Enum('meta_ads', 'google_ads', 'seo', name='service_types'), nullable=False)
     platform_preference = db.Column(db.String(255), nullable=True)
     budget_min = db.Column(db.Integer, nullable=True)
@@ -45,6 +46,10 @@ class Brief(db.Model):
     duration_weeks = db.Column(db.Integer, nullable=True)
     marketing_goals = db.Column(db.Text, nullable=True)
     target_audience = db.Column(db.String(500), nullable=True)
+    # Follow-up question answers
+    materials_provider = db.Column(db.Enum('client', 'agency', 'collaboration', name='materials_provider_types'), nullable=True)
+    copywriting_provider = db.Column(db.Enum('client', 'agency', 'collaboration', name='copywriting_provider_types'), nullable=True)
+    communication_frequency = db.Column(db.Enum('weekly', 'monthly', 'milestones', 'async', name='communication_frequency_types'), nullable=True)
     status = db.Column(db.Enum('active', 'closed', 'in_progress', name='brief_status'), default='active')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     

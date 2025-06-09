@@ -43,6 +43,18 @@
                     </div>
                     {% endif %}
 
+                    <!-- Structured Brief (if available) -->
+                    {% if brief.structured_brief %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-file-alt me-2"></i>{{ _('structured_brief') }}</h6>
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ brief.structured_brief }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
                     <!-- Description -->
                     <div class="mb-4">
                         <h6><i class="fas fa-align-left me-2"></i>{{ _('project_description') }}</h6>
@@ -73,6 +85,76 @@
                             {% for item in brief.suggested_items.split(', ') %}
                                 <span class="badge bg-primary">{{ item.strip() }}</span>
                             {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Collaboration Information -->
+                    {% if brief.materials_provider or brief.copywriting_provider or brief.communication_frequency %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-handshake me-2"></i>{{ _('collaboration_details') }}</h6>
+                        <div class="row">
+                            {% if brief.materials_provider %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center p-3">
+                                        <i class="fas fa-images fa-2x text-info mb-2"></i>
+                                        <h6 class="card-title">{{ _('materials_provision') }}</h6>
+                                        <span class="badge bg-info">
+                                            {% if brief.materials_provider == 'client' %}
+                                                {{ _('materials_client') }}
+                                            {% elif brief.materials_provider == 'agency' %}
+                                                {{ _('materials_agency') }}
+                                            {% elif brief.materials_provider == 'collaboration' %}
+                                                {{ _('materials_collaboration') }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if brief.copywriting_provider %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center p-3">
+                                        <i class="fas fa-pen fa-2x text-warning mb-2"></i>
+                                        <h6 class="card-title">{{ _('copywriting_provision') }}</h6>
+                                        <span class="badge bg-warning text-dark">
+                                            {% if brief.copywriting_provider == 'client' %}
+                                                {{ _('copywriting_client') }}
+                                            {% elif brief.copywriting_provider == 'agency' %}
+                                                {{ _('copywriting_agency') }}
+                                            {% elif brief.copywriting_provider == 'collaboration' %}
+                                                {{ _('copywriting_collaboration') }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if brief.communication_frequency %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center p-3">
+                                        <i class="fas fa-comments fa-2x text-success mb-2"></i>
+                                        <h6 class="card-title">{{ _('communication_style') }}</h6>
+                                        <span class="badge bg-success">
+                                            {% if brief.communication_frequency == 'weekly' %}
+                                                {{ _('comm_weekly') }}
+                                            {% elif brief.communication_frequency == 'monthly' %}
+                                                {{ _('comm_monthly') }}
+                                            {% elif brief.communication_frequency == 'milestones' %}
+                                                {{ _('comm_milestones') }}
+                                            {% elif brief.communication_frequency == 'async' %}
+                                                {{ _('comm_async') }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endif %}

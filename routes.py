@@ -1,9 +1,10 @@
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from app import app, db
 from models import User, Brief, Proposal
 from brief_generator import generate_brief_from_input
+from openai_helper import generate_structured_brief
 from i18n import _, get_current_language, get_languages
 import logging
 
@@ -176,13 +177,22 @@ def create_brief():
             return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         try:
-            # Generate structured brief from natural language input
+            # Get structured brief if provided (from AI generation)
+            structured_brief = request.form.get('structured_brief', '').strip()
+            
+            # Get follow-up question answers
+            materials_provider = request.form.get('materials_provider')
+            copywriting_provider = request.form.get('copywriting_provider')
+            communication_frequency = request.form.get('communication_frequency')
+            
+            # Generate structured brief from natural language input (fallback)
             brief_data = generate_brief_from_input(raw_input)
             
             # Create new brief
             brief = Brief(
                 user_id=current_user.id,
                 raw_input=raw_input,
+                structured_brief=structured_brief if structured_brief else None,
                 service_type=service_type,
                 title=brief_data['title'],
                 description=brief_data['description'],
@@ -192,7 +202,10 @@ def create_brief():
                 suggested_items=brief_data['suggested_items'],
                 duration_weeks=brief_data['duration_weeks'],
                 marketing_goals=brief_data['marketing_goals'],
-                target_audience=brief_data['target_audience']
+                target_audience=brief_data['target_audience'],
+                materials_provider=materials_provider,
+                copywriting_provider=copywriting_provider,
+                communication_frequency=communication_frequency
             )
             
             db.session.add(brief)
@@ -318,6 +331,43 @@ def view_proposals(brief_id):
     proposals = Proposal.query.filter_by(brief_id=brief_id).order_by(Proposal.created_at.desc()).all()
     
     return render_template('view_proposals.html', brief=brief, proposals=proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
+
+# API Routes
+@app.route('/api/generate-brief', methods=['POST'])
+@login_required
+def api_generate_brief():
+    """API endpoint to generate structured brief using OpenAI"""
+    try:
+        data = request.get_json()
+        raw_input = data.get('raw_input', '').strip()
+        service_type = data.get('service_type', '')
+        
+        if not raw_input or len(raw_input) < 50:
+            return jsonify({
+                'success': False,
+                'error': '請提供至少 50 個字符的詳細行銷需求'
+            }), 400
+            
+        if service_type not in ['meta_ads', 'google_ads', 'seo']:
+            return jsonify({
+                'success': False,
+                'error': '請選擇有效的服務類型'
+            }), 400
+        
+        # Generate structured brief using OpenAI
+        structured_brief = generate_structured_brief(raw_input, service_type)
+        
+        return jsonify({
+            'success': True,
+            'structured_brief': structured_brief
+        })
+        
+    except Exception as e:
+        logging.error(f"Error generating structured brief: {e}")
+        return jsonify({
+            'success': False,
+            'error': f'生成失敗: {str(e)}'
+        }), 500
 
 @app.errorhandler(404)
 def not_found_error(error):
