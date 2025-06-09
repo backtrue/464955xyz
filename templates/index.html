@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Marketing Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row justify-content-center text-center py-5">
+        <div class="col-lg-8">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="fas fa-handshake text-primary me-3"></i>
+                Marketing Hub
+            </h1>
+            <p class="lead mb-4">
+                Connect clients with marketing professionals through our intelligent brief generation and proposal system.
+            </p>
+            
+            {% if not current_user.is_authenticated %}
+                <div class="d-grid d-md-flex gap-3 justify-content-center">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                </div>
+            {% else %}
+                <div class="d-grid d-md-flex gap-3 justify-content-center">
+                    {% if current_user.role == 'client' %}
+                        <a href="{{ url_for('client_dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{{ url_for('create_brief') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Create Brief
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('pro_dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row py-5">
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 bg-secondary">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-user-tie fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">For Clients</h5>
+                    <p class="card-text">
+                        Describe your marketing needs in natural language. Our system automatically generates structured briefs and connects you with qualified professionals.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 bg-secondary">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-magic fa-3x text-success"></i>
+                    </div>
+                    <h5 class="card-title">Smart Brief Generation</h5>
+                    <p class="card-text">
+                        Advanced algorithms analyze your requirements and create detailed project briefs with budget estimates, timelines, and recommended strategies.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 bg-secondary">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-users fa-3x text-info"></i>
+                    </div>
+                    <h5 class="card-title">For Professionals</h5>
+                    <p class="card-text">
+                        Browse structured briefs, submit competitive proposals, and showcase your expertise to win new clients in the marketing industry.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="row py-5">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-6 fw-bold">How It Works</h2>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-dark border-primary">
+                <div class="card-header bg-primary">
+                    <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>For Clients</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent">
+                            <strong>1. Register</strong> as a client and complete your profile
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>2. Describe</strong> your marketing needs in natural language
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>3. Review</strong> the automatically generated structured brief
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>4. Publish</strong> your brief and receive proposals
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>5. Choose</strong> the best professional for your project
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-dark border-success">
+                <div class="card-header bg-success">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>For Professionals</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent">
+                            <strong>1. Register</strong> as a professional and build your profile
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>2. Browse</strong> available project briefs
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>3. Submit</strong> detailed proposals with pricing
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>4. Showcase</strong> your portfolio and expertise
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>5. Win</strong> projects and grow your business
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not current_user.is_authenticated %}
+    <!-- Call to Action -->
+    <div class="row py-5">
+        <div class="col-12 text-center">
+            <div class="card bg-primary text-white">
+                <div class="card-body py-5">
+                    <h3 class="card-title">Ready to Get Started?</h3>
+                    <p class="card-text lead">Join our platform and connect with the right marketing professionals today.</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-rocket me-2"></i>Start Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

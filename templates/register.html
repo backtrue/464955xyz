@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Marketing Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center py-5">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-user-plus me-2"></i>Create Account</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <!-- Role Selection -->
+                        <div class="mb-3">
+                            <label class="form-label">I am a:</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="client" value="client" required>
+                                        <label class="form-check-label" for="client">
+                                            <i class="fas fa-user-tie me-1"></i>
+                                            <strong>Client</strong><br>
+                                            <small class="text-muted">I need marketing services</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="pro" value="pro" required>
+                                        <label class="form-check-label" for="pro">
+                                            <i class="fas fa-users me-1"></i>
+                                            <strong>Professional</strong><br>
+                                            <small class="text-muted">I provide marketing services</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label for="full_name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+
+                        <!-- Company Name (Optional) -->
+                        <div class="mb-3">
+                            <label for="company_name" class="form-label">Company Name <small class="text-muted">(Optional)</small></label>
+                            <input type="text" class="form-control" id="company_name" name="company_name">
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                            <div class="form-text">Password must be at least 6 characters long.</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+
+                        <!-- Login Link -->
+                        <div class="text-center">
+                            <p class="mb-0">Already have an account? 
+                                <a href="{{ url_for('login') }}" class="text-decoration-none">Sign in here</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

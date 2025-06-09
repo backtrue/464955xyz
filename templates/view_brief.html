@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}{{ brief.title }} - Marketing Hub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Brief Details -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-start">
+                    <div>
+                        <h4 class="mb-1">{{ brief.title }}</h4>
+                        <small class="text-muted">
+                            Posted by {{ brief.client.full_name or brief.client.email }} 
+                            on {{ brief.created_at.strftime('%B %d, %Y') }}
+                        </small>
+                    </div>
+                    <div>
+                        {% if brief.status == 'active' %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ brief.status.title() }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h6><i class="fas fa-align-left me-2"></i>Project Description</h6>
+                        <p class="text-muted">{{ brief.description }}</p>
+                    </div>
+
+                    <!-- Marketing Goals -->
+                    {% if brief.marketing_goals %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-bullseye me-2"></i>Marketing Goals</h6>
+                        <p class="text-muted">{{ brief.marketing_goals }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Target Audience -->
+                    {% if brief.target_audience %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-users me-2"></i>Target Audience</h6>
+                        <p class="text-muted">{{ brief.target_audience }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Suggested Items -->
+                    {% if brief.suggested_items %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-list-check me-2"></i>Suggested Services</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for item in brief.suggested_items.split(', ') %}
+                                <span class="badge bg-primary">{{ item.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Original Input (for clients only) -->
+                    {% if current_user.role == 'client' and brief.user_id == current_user.id %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-quote-left me-2"></i>Original Request</h6>
+                        <div class="card bg-secondary">
+                            <div class="card-body">
+                                <p class="mb-0 font-monospace small">{{ brief.raw_input }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2">
+                        {% if current_user.role == 'pro' and brief.status == 'active' and brief.user_id != current_user.id %}
+                            <a href="{{ url_for('submit_proposal', brief_id=brief.id) }}" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Proposal
+                            </a>
+                        {% elif current_user.role == 'client' and brief.user_id == current_user.id %}
+                            <a href="{{ url_for('view_proposals', brief_id=brief.id) }}" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>View Proposals ({{ proposals|length }})
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposals (for brief owner) -->
+            {% if current_user.role == 'client' and brief.user_id == current_user.id and proposals %}
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-handshake me-2"></i>Proposals ({{ proposals|length }})</h5>
+                </div>
+                <div class="card-body">
+                    {% for proposal in proposals[:3] %}
+                    <div class="card mb-3 {% if proposal.status == 'accepted' %}border-success{% elif proposal.status == 'rejected' %}border-danger{% endif %}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-1">{{ proposal.professional.full_name or proposal.professional.email }}</h6>
+                                    <small class="text-muted">{{ proposal.professional.company_name or 'Independent Professional' }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <strong class="text-primary">${{ "{:,}".format(proposal.price) }}</strong>
+                                    <br><small class="text-muted">{{ proposal.estimated_days }} days</small>
+                                </div>
+                            </div>
+                            <p class="mb-2">{{ proposal.message[:200] }}{% if proposal.message|length > 200 %}...{% endif %}</p>
+                            {% if proposal.sample_links %}
+                            <div class="mb-2">
+                                <small><strong>Portfolio:</strong> 
+                                    <a href="{{ proposal.sample_links }}" target="_blank" class="text-decoration-none">View Samples</a>
+                                </small>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Submitted {{ proposal.created_at.strftime('%b %d, %Y') }}</small>
+                                {% if proposal.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending Review</span>
+                                {% elif proposal.status == 'accepted' %}
+                                    <span class="badge bg-success">Accepted</span>
+                                {% elif proposal.status == 'rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if proposals|length > 3 %}
+                    <div class="text-center">
+                        <a href="{{ url_for('view_proposals', brief_id=brief.id) }}" class="btn btn-outline-primary">
+                            View All {{ proposals|length }} Proposals
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Brief Sidebar -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle me-2"></i>Brief Details</h6>
+                </div>
+                <div class="card-body">
+                    <!-- Budget -->
+                    <div class="mb-3">
+                        <strong>Budget Range</strong>
+                        <div class="text-muted">
+                            {% if brief.budget_min and brief.budget_max %}
+                                ${{ "{:,}".format(brief.budget_min) }} - ${{ "{:,}".format(brief.budget_max) }}
+                            {% elif brief.budget_min %}
+                                ${{ "{:,}".format(brief.budget_min) }}
+                            {% else %}
+                                To be discussed
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="mb-3">
+                        <strong>Duration</strong>
+                        <div class="text-muted">{{ brief.duration_weeks }} weeks</div>
+                    </div>
+
+                    <!-- Platform Preference -->
+                    {% if brief.platform_preference %}
+                    <div class="mb-3">
+                        <strong>Preferred Platforms</strong>
+                        <div class="mt-1">
+                            {% for platform in brief.platform_preference.split(', ') %}
+                                <span class="badge bg-secondary me-1 mb-1">{{ platform.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Client Info -->
+                    <div class="mb-3">
+                        <strong>Client</strong>
+                        <div class="text-muted">
+                            {{ brief.client.full_name or brief.client.email }}
+                            {% if brief.client.company_name %}
+                                <br><small>{{ brief.client.company_name }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Posted Date -->
+                    <div class="mb-3">
+                        <strong>Posted</strong>
+                        <div class="text-muted">{{ brief.created_at.strftime('%B %d, %Y at %I:%M %p') }}</div>
+                    </div>
+
+                    <!-- Proposal Count -->
+                    {% if current_user.role == 'pro' or (current_user.role == 'client' and brief.user_id == current_user.id) %}
+                    <div class="mb-3">
+                        <strong>Proposals Received</strong>
+                        <div class="text-muted">{{ proposals|length if proposals else brief.proposals|length }} proposals</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    {% if current_user.role == 'client' %}
+                        <a href="{{ url_for('client_dashboard') }}" class="btn btn-secondary w-100 mb-2">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('pro_dashboard') }}" class="btn btn-secondary w-100 mb-2">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

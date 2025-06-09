@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Proposal - Marketing Hub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Proposal Form -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-paper-plane me-2"></i>Submit Proposal</h4>
+                    <p class="mb-0 text-muted">Submit your proposal for: <strong>{{ brief.title }}</strong></p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <!-- Pricing -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="price" class="form-label">
+                                    <strong>Your Price (USD)</strong>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="price" name="price" 
+                                           min="1" max="1000000" required>
+                                </div>
+                                <div class="form-text">Enter your total project price in USD</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="estimated_days" class="form-label">
+                                    <strong>Estimated Duration (Days)</strong>
+                                </label>
+                                <input type="number" class="form-control" id="estimated_days" name="estimated_days" 
+                                       min="1" max="365" required>
+                                <div class="form-text">How many days to complete this project?</div>
+                            </div>
+                        </div>
+
+                        <!-- Proposal Message -->
+                        <div class="mb-4">
+                            <label for="message" class="form-label">
+                                <strong>Proposal Details</strong>
+                            </label>
+                            <textarea class="form-control" id="message" name="message" rows="8" 
+                                    placeholder="Describe your approach to this project. Include:
+• Your understanding of the client's needs
+• Your proposed strategy and methodology
+• Why you're the right professional for this project
+• Your relevant experience
+• What the client can expect from working with you
+• Any additional services or value you provide" 
+                                    required minlength="100"></textarea>
+                            <div class="form-text">Provide a detailed proposal (minimum 100 characters). This is your chance to stand out!</div>
+                        </div>
+
+                        <!-- Portfolio Links -->
+                        <div class="mb-4">
+                            <label for="sample_links" class="form-label">
+                                <strong>Portfolio/Sample Links</strong> <small class="text-muted">(Optional)</small>
+                            </label>
+                            <input type="url" class="form-control" id="sample_links" name="sample_links" 
+                                   placeholder="https://your-portfolio.com or https://drive.google.com/samples">
+                            <div class="form-text">Share links to your portfolio, case studies, or relevant work samples</div>
+                        </div>
+
+                        <!-- Tips -->
+                        <div class="alert alert-info">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Tips for a winning proposal:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Show you understand the client's specific needs and goals</li>
+                                <li>Explain your methodology and approach clearly</li>
+                                <li>Highlight relevant experience and past successes</li>
+                                <li>Be realistic with pricing and timelines</li>
+                                <li>Include portfolio links to showcase your work</li>
+                            </ul>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('view_brief', brief_id=brief.id) }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Brief
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Proposal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Brief Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-file-alt me-2"></i>Brief Summary</h6>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-3">{{ brief.title }}</h6>
+                    
+                    <!-- Client Info -->
+                    <div class="mb-3">
+                        <strong>Client</strong>
+                        <div class="text-muted">
+                            {{ brief.client.full_name or brief.client.email }}
+                            {% if brief.client.company_name %}
+                                <br><small>{{ brief.client.company_name }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Budget -->
+                    <div class="mb-3">
+                        <strong>Client Budget</strong>
+                        <div class="text-muted">
+                            {% if brief.budget_min and brief.budget_max %}
+                                ${{ "{:,}".format(brief.budget_min) }} - ${{ "{:,}".format(brief.budget_max) }}
+                            {% elif brief.budget_min %}
+                                ${{ "{:,}".format(brief.budget_min) }}
+                            {% else %}
+                                To be discussed
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="mb-3">
+                        <strong>Expected Duration</strong>
+                        <div class="text-muted">{{ brief.duration_weeks }} weeks</div>
+                    </div>
+
+                    <!-- Platform Preference -->
+                    {% if brief.platform_preference %}
+                    <div class="mb-3">
+                        <strong>Platforms</strong>
+                        <div class="mt-1">
+                            {% for platform in brief.platform_preference.split(', ') %}
+                                <span class="badge bg-secondary me-1 mb-1">{{ platform.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Goals -->
+                    {% if brief.marketing_goals %}
+                    <div class="mb-3">
+                        <strong>Goals</strong>
+                        <div class="text-muted small">{{ brief.marketing_goals }}</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Target Audience -->
+                    {% if brief.target_audience %}
+                    <div class="mb-3">
+                        <strong>Target Audience</strong>
+                        <div class="text-muted small">{{ brief.target_audience }}</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Competition -->
+                    <div class="mb-3">
+                        <strong>Proposals Submitted</strong>
+                        <div class="text-muted">{{ brief.proposals|length }} other proposals</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
