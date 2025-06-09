@@ -130,7 +130,7 @@ def client_dashboard():
     for brief in briefs:
         brief.proposal_count = len(brief.proposals)
     
-    return render_template('client_dashboard.html', briefs=briefs)
+    return render_template('client_dashboard.html', briefs=briefs, _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/pro/dashboard')
 @login_required
