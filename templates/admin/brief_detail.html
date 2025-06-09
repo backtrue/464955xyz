@@ -54,7 +54,7 @@
                                 {% endif %} me-2">
                                 {{ brief.status.title() }}
                             </span>
-                            <span class="badge bg-secondary">{{ brief.service_type.replace('_', ' ').title() }}</span>
+                            <span class="badge bg-secondary">{{ (brief.service_type or 'unknown').replace('_', ' ').title() }}</span>
                         </div>
                     </div>
                     <div class="card-body">

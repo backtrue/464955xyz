@@ -99,7 +99,7 @@
                                     </td>
                                     <td>{{ brief.client.email }}</td>
                                     <td>
-                                        <span class="badge bg-secondary">{{ brief.service_type.replace('_', ' ').title() }}</span>
+                                        <span class="badge bg-secondary">{{ (brief.service_type or 'unknown').replace('_', ' ').title() }}</span>
                                     </td>
                                     <td>
                                         {% if brief.budget_min and brief.budget_max %}
