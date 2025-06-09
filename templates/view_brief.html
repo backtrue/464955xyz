@@ -249,28 +249,30 @@
                 <div class="card-body">
                     <!-- Budget -->
                     <div class="mb-3">
-                        <strong>Budget Range</strong>
+                        <strong>{{ _('budget') }}</strong>
                         <div class="text-muted">
                             {% if brief.budget_min and brief.budget_max %}
                                 ${{ "{:,}".format(brief.budget_min) }} - ${{ "{:,}".format(brief.budget_max) }}
                             {% elif brief.budget_min %}
-                                ${{ "{:,}".format(brief.budget_min) }}
+                                ${{ "{:,}".format(brief.budget_min) }}+
                             {% else %}
-                                To be discussed
+                                {{ _('to_be_discussed') }}
                             {% endif %}
                         </div>
                     </div>
 
                     <!-- Duration -->
+                    {% if brief.duration_weeks %}
                     <div class="mb-3">
-                        <strong>Duration</strong>
-                        <div class="text-muted">{{ brief.duration_weeks }} weeks</div>
+                        <strong>{{ _('timeline') }}</strong>
+                        <div class="text-muted">{{ brief.duration_weeks }} {{ _('weeks') }}</div>
                     </div>
+                    {% endif %}
 
                     <!-- Platform Preference -->
                     {% if brief.platform_preference %}
                     <div class="mb-3">
-                        <strong>Preferred Platforms</strong>
+                        <strong>{{ _('preferred_platforms') }}</strong>
                         <div class="mt-1">
                             {% for platform in brief.platform_preference.split(', ') %}
                                 <span class="badge bg-secondary me-1 mb-1">{{ platform.strip() }}</span>
@@ -281,7 +283,7 @@
 
                     <!-- Client Info -->
                     <div class="mb-3">
-                        <strong>Client</strong>
+                        <strong>{{ _('client') }}</strong>
                         <div class="text-muted">
                             {{ brief.client.full_name or brief.client.email }}
                             {% if brief.client.company_name %}
@@ -292,15 +294,15 @@
 
                     <!-- Posted Date -->
                     <div class="mb-3">
-                        <strong>Posted</strong>
+                        <strong>{{ _('posted') }}</strong>
                         <div class="text-muted">{{ brief.created_at.strftime('%B %d, %Y at %I:%M %p') }}</div>
                     </div>
 
                     <!-- Proposal Count -->
                     {% if current_user.role == 'pro' or (current_user.role == 'client' and brief.user_id == current_user.id) %}
                     <div class="mb-3">
-                        <strong>Proposals Received</strong>
-                        <div class="text-muted">{{ proposals|length if proposals else brief.proposals|length }} proposals</div>
+                        <strong>{{ _('proposals_received') }}</strong>
+                        <div class="text-muted">{{ proposals|length if proposals else brief.proposals|length }} {{ _('proposals') }}</div>
                     </div>
                     {% endif %}
                 </div>
