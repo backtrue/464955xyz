@@ -167,6 +167,16 @@ TRANSLATIONS = {
         'service_example': 'Service Business Example',
         'service_example_text': '"I\'m a financial advisor looking to generate qualified leads through LinkedIn and Google Ads. Target audience is business owners and high-income professionals. Budget around $3,000/month, need content creation and lead nurturing campaigns."',
         'use_this': 'Use This',
+        
+        # Service types
+        'select_service_type': 'Select Service Type',
+        'meta_ads_service': 'E-commerce Meta Ads',
+        'meta_ads_desc': 'Facebook & Instagram advertising for online stores',
+        'google_ads_service': 'E-commerce Google Ads',
+        'google_ads_desc': 'Google advertising campaigns for e-commerce',
+        'seo_service': 'E-commerce SEO',
+        'seo_desc': 'Search engine optimization for online stores',
+        'service_type': 'Service Type',
         'ready_to_get_started': 'Ready to Get Started?',
         'join_platform_desc': 'Join our platform and connect with the right marketing professionals today.',
         'start_now': 'Start Now',
@@ -332,6 +342,15 @@ TRANSLATIONS = {
         'service_example': '服務業範例',
         'service_example_text': '"我是一名財務顧問，希望通過 LinkedIn 和 Google Ads 產生合格的潛在客戶。目標受眾是企業主和高收入專業人士。預算約每月 3,000 美元，需要內容創建和潛在客戶培養活動。"',
         'use_this': '使用此範例',
+        
+        # Service types
+        'select_service_type': '選擇服務類型',
+        'meta_ads_service': '電商 Meta廣告投放',
+        'meta_ads_desc': 'Facebook & Instagram 電商廣告投放',
+        'google_ads_service': '電商 Google Ads 廣告投放',
+        'google_ads_desc': 'Google 電商廣告活動策劃與執行',
+        'seo_service': '電商 SEO',
+        'seo_desc': '電商網站搜尋引擎優化',
         'ready_to_get_started': '準備好開始了嗎？',
         'join_platform_desc': '加入我們的平台，今天就與合適的行銷專業人士聯繫。',
         'start_now': '立即開始',
@@ -497,6 +516,15 @@ TRANSLATIONS = {
         'service_example': 'サービス業例',
         'service_example_text': '"LinkedInとGoogle Adsを通じて質の高いリードを生成したいファイナンシャルアドバイザーです。ターゲットオーディエンスは企業オーナーと高収入の専門職です。月額約3,000ドルの予算で、コンテンツ作成とリード育成キャンペーンが必要です。"',
         'use_this': 'これを使用',
+        
+        # Service types
+        'select_service_type': 'サービスタイプを選択',
+        'meta_ads_service': 'Eコマース Meta広告',
+        'meta_ads_desc': 'Facebook & Instagram Eコマース広告配信',
+        'google_ads_service': 'Eコマース Google Ads',
+        'google_ads_desc': 'Google Eコマース広告キャンペーン',
+        'seo_service': 'Eコマース SEO',
+        'seo_desc': 'オンラインストア検索エンジン最適化',
         'ready_to_get_started': 'Ready to Get Started?',
         'join_platform_desc': 'Join our platform and connect with the right marketing professionals today.',
         'start_now': 'Start Now',

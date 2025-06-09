@@ -26,6 +26,57 @@
                             </ul>
                         </div>
 
+                        <!-- Service Type Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <strong>{{ _('select_service_type') }}</strong>
+                            </label>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="meta_ads" value="meta_ads" required>
+                                        <label class="form-check-label" for="meta_ads">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center p-3">
+                                                    <i class="fab fa-facebook-square fa-2x text-primary mb-2"></i>
+                                                    <h6 class="card-title">{{ _('meta_ads_service') }}</h6>
+                                                    <p class="card-text small text-muted">{{ _('meta_ads_desc') }}</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="google_ads" value="google_ads" required>
+                                        <label class="form-check-label" for="google_ads">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center p-3">
+                                                    <i class="fab fa-google fa-2x text-warning mb-2"></i>
+                                                    <h6 class="card-title">{{ _('google_ads_service') }}</h6>
+                                                    <p class="card-text small text-muted">{{ _('google_ads_desc') }}</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="service_type" id="seo" value="seo" required>
+                                        <label class="form-check-label" for="seo">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center p-3">
+                                                    <i class="fas fa-search fa-2x text-success mb-2"></i>
+                                                    <h6 class="card-title">{{ _('seo_service') }}</h6>
+                                                    <p class="card-text small text-muted">{{ _('seo_desc') }}</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Natural Language Input -->
                         <div class="mb-4">
                             <label for="raw_input" class="form-label">

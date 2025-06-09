@@ -161,11 +161,16 @@ def create_brief():
     
     if request.method == 'POST':
         raw_input = request.form.get('raw_input', '').strip()
+        service_type = request.form.get('service_type', '').strip()
         
         if not raw_input:
             flash('Please describe your marketing needs.', 'error')
             return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
+        if not service_type:
+            flash('Please select a service type.', 'error')
+            return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
+            
         if len(raw_input) < 50:
             flash('Please provide more detailed information (at least 50 characters).', 'error')
             return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
@@ -178,6 +183,7 @@ def create_brief():
             brief = Brief(
                 user_id=current_user.id,
                 raw_input=raw_input,
+                service_type=service_type,
                 title=brief_data['title'],
                 description=brief_data['description'],
                 platform_preference=brief_data['platform_preference'],

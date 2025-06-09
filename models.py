@@ -37,6 +37,7 @@ class Brief(db.Model):
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
     raw_input = db.Column(db.Text, nullable=False)  # Original natural language input
+    service_type = db.Column(db.Enum('meta_ads', 'google_ads', 'seo', name='service_types'), nullable=False)
     platform_preference = db.Column(db.String(255), nullable=True)
     budget_min = db.Column(db.Integer, nullable=True)
     budget_max = db.Column(db.Integer, nullable=True)

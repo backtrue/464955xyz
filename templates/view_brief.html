@@ -25,6 +25,24 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <!-- Service Type -->
+                    {% if brief.service_type %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-tag me-2"></i>{{ _('service_type') }}</h6>
+                        <span class="badge bg-primary fs-6">
+                            {% if brief.service_type == 'meta_ads' %}
+                                {{ _('meta_ads_service') }}
+                            {% elif brief.service_type == 'google_ads' %}
+                                {{ _('google_ads_service') }}
+                            {% elif brief.service_type == 'seo' %}
+                                {{ _('seo_service') }}
+                            {% else %}
+                                {{ brief.service_type }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+
                     <!-- Description -->
                     <div class="mb-4">
                         <h6><i class="fas fa-align-left me-2"></i>{{ _('project_description') }}</h6>
