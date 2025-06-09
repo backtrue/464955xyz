@@ -247,6 +247,42 @@
                     <h6><i class="fas fa-info-circle me-2"></i>Brief Details</h6>
                 </div>
                 <div class="card-body">
+                    <!-- Service Type -->
+                    {% if brief.service_type %}
+                    <div class="mb-3">
+                        <strong>{{ _('service_type') }}</strong>
+                        <div class="mt-1">
+                            <span class="badge bg-primary">
+                                {% if brief.service_type == 'meta_ads' %}
+                                    {{ _('meta_ads_service') }}
+                                {% elif brief.service_type == 'google_ads' %}
+                                    {{ _('google_ads_service') }}
+                                {% elif brief.service_type == 'seo' %}
+                                    {{ _('seo_service') }}
+                                {% else %}
+                                    {{ brief.service_type }}
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Marketing Goals -->
+                    {% if brief.marketing_goals %}
+                    <div class="mb-3">
+                        <strong>{{ _('marketing_goals') }}</strong>
+                        <div class="text-muted small">{{ brief.marketing_goals }}</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Target Audience -->
+                    {% if brief.target_audience %}
+                    <div class="mb-3">
+                        <strong>{{ _('target_audience') }}</strong>
+                        <div class="text-muted small">{{ brief.target_audience }}</div>
+                    </div>
+                    {% endif %}
+
                     <!-- Budget -->
                     <div class="mb-3">
                         <strong>{{ _('budget') }}</strong>
@@ -266,18 +302,6 @@
                     <div class="mb-3">
                         <strong>{{ _('timeline') }}</strong>
                         <div class="text-muted">{{ brief.duration_weeks }} {{ _('weeks') }}</div>
-                    </div>
-                    {% endif %}
-
-                    <!-- Platform Preference -->
-                    {% if brief.platform_preference %}
-                    <div class="mb-3">
-                        <strong>{{ _('preferred_platforms') }}</strong>
-                        <div class="mt-1">
-                            {% for platform in brief.platform_preference.split(', ') %}
-                                <span class="badge bg-secondary me-1 mb-1">{{ platform.strip() }}</span>
-                            {% endfor %}
-                        </div>
                     </div>
                     {% endif %}
 
