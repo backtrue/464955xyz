@@ -420,6 +420,71 @@ def user_profile():
                          proposal_count=proposal_count,
                          _=_, get_languages=get_languages, current_lang=get_current_language())
 
+@app.route('/profile/update', methods=['POST'])
+@login_required
+def update_profile():
+    """Update user profile information"""
+    try:
+        # Get form data
+        full_name = request.form.get('full_name', '').strip()
+        company_name = request.form.get('company_name', '').strip()
+        email = request.form.get('email', '').strip()
+        current_password = request.form.get('current_password', '')
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        
+        # Validate email
+        if not email:
+            flash(_('email_required'), 'error')
+            return redirect(url_for('user_profile'))
+            
+        # Check if email is already taken by another user
+        existing_user = User.query.filter(User.email == email, User.id != current_user.id).first()
+        if existing_user:
+            flash(_('email_already_exists'), 'error')
+            return redirect(url_for('user_profile'))
+        
+        # Update basic profile information
+        current_user.full_name = full_name if full_name else None
+        current_user.company_name = company_name if company_name else None
+        current_user.email = email
+        
+        # Handle password change if requested
+        if current_password or new_password or confirm_password:
+            if not current_password:
+                flash(_('current_password_required'), 'error')
+                return redirect(url_for('user_profile'))
+                
+            if not current_user.check_password(current_password):
+                flash(_('current_password_incorrect'), 'error')
+                return redirect(url_for('user_profile'))
+                
+            if not new_password:
+                flash(_('new_password_required'), 'error')
+                return redirect(url_for('user_profile'))
+                
+            if len(new_password) < 6:
+                flash(_('password_too_short'), 'error')
+                return redirect(url_for('user_profile'))
+                
+            if new_password != confirm_password:
+                flash(_('passwords_do_not_match'), 'error')
+                return redirect(url_for('user_profile'))
+                
+            # Update password
+            current_user.set_password(new_password)
+        
+        # Save changes
+        db.session.commit()
+        flash(_('profile_updated_successfully'), 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(_('profile_update_error'), 'error')
+        app.logger.error(f"Profile update error: {str(e)}")
+    
+    return redirect(url_for('user_profile'))
+
 # API Routes
 @app.route('/api/generate-brief', methods=['POST'])
 @login_required
