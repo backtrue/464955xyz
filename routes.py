@@ -6,6 +6,7 @@ from models import User, Brief, Proposal
 from brief_generator import generate_brief_from_input
 from openai_helper import generate_structured_brief
 from admin_utils import superadmin_required, get_user_stats
+from brief_parser import parse_structured_brief
 from i18n import _, get_current_language, get_languages
 import logging
 
@@ -241,6 +242,16 @@ def view_brief(brief_id):
     if current_user.role == 'client' and brief.user_id == current_user.id:
         proposals = Proposal.query.filter_by(brief_id=brief_id).order_by(Proposal.created_at.desc()).all()
     
+    # Parse structured brief to extract target audience and marketing goals
+    if brief.structured_brief:
+        parsed_data = parse_structured_brief(brief.structured_brief)
+        if parsed_data['target_audience'] and not brief.target_audience:
+            brief.target_audience = parsed_data['target_audience']
+            db.session.commit()
+        if parsed_data['marketing_goals'] and not brief.marketing_goals:
+            brief.marketing_goals = parsed_data['marketing_goals']
+            db.session.commit()
+    
     return render_template('view_brief.html', brief=brief, proposals=proposals, _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/brief/<int:brief_id>/edit', methods=['GET', 'POST'])
@@ -415,9 +426,14 @@ def api_generate_brief():
         # Generate structured brief using OpenAI
         structured_brief = generate_structured_brief(raw_input, service_type)
         
+        # Parse structured brief to extract target audience and marketing goals
+        parsed_data = parse_structured_brief(structured_brief)
+        
         return jsonify({
             'success': True,
-            'structured_brief': structured_brief
+            'structured_brief': structured_brief,
+            'target_audience': parsed_data['target_audience'],
+            'marketing_goals': parsed_data['marketing_goals']
         })
         
     except Exception as e:
