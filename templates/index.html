@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome to Marketing Hub{% endblock %}
+{% block title %}{{ _('welcome_title') }}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -9,33 +9,33 @@
         <div class="col-lg-8">
             <h1 class="display-4 fw-bold mb-4">
                 <i class="fas fa-handshake text-primary me-3"></i>
-                Marketing Hub
+                {{ _('marketing_hub') }}
             </h1>
             <p class="lead mb-4">
-                Connect clients with marketing professionals through our intelligent brief generation and proposal system.
+                {{ _('welcome_subtitle') }}
             </p>
             
             {% if not current_user.is_authenticated %}
                 <div class="d-grid d-md-flex gap-3 justify-content-center">
                     <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-user-plus me-2"></i>Get Started
+                        <i class="fas fa-user-plus me-2"></i>{{ _('get_started') }}
                     </a>
                     <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg">
-                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        <i class="fas fa-sign-in-alt me-2"></i>{{ _('sign_in') }}
                     </a>
                 </div>
             {% else %}
                 <div class="d-grid d-md-flex gap-3 justify-content-center">
                     {% if current_user.role == 'client' %}
                         <a href="{{ url_for('client_dashboard') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                            <i class="fas fa-tachometer-alt me-2"></i>{{ _('go_to_dashboard') }}
                         </a>
                         <a href="{{ url_for('create_brief') }}" class="btn btn-outline-secondary btn-lg">
-                            <i class="fas fa-plus me-2"></i>Create Brief
+                            <i class="fas fa-plus me-2"></i>{{ _('create_brief') }}
                         </a>
                     {% else %}
                         <a href="{{ url_for('pro_dashboard') }}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                            <i class="fas fa-tachometer-alt me-2"></i>{{ _('go_to_dashboard') }}
                         </a>
                     {% endif %}
                 </div>
@@ -51,9 +51,9 @@
                     <div class="mb-3">
                         <i class="fas fa-user-tie fa-3x text-primary"></i>
                     </div>
-                    <h5 class="card-title">For Clients</h5>
+                    <h5 class="card-title">{{ _('for_clients') }}</h5>
                     <p class="card-text">
-                        Describe your marketing needs in natural language. Our system automatically generates structured briefs and connects you with qualified professionals.
+                        {{ _('for_clients_desc') }}
                     </p>
                 </div>
             </div>

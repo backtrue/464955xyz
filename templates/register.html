@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Register - Marketing Hub{% endblock %}
+{% block title %}{{ _('register') }} - {{ _('marketing_hub') }}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -8,21 +8,21 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-header text-center">
-                    <h3><i class="fas fa-user-plus me-2"></i>Create Account</h3>
+                    <h3><i class="fas fa-user-plus me-2"></i>{{ _('create_account') }}</h3>
                 </div>
                 <div class="card-body p-4">
                     <form method="POST">
                         <!-- Role Selection -->
                         <div class="mb-3">
-                            <label class="form-label">I am a:</label>
+                            <label class="form-label">{{ _('i_am_a') }}</label>
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="role" id="client" value="client" required>
                                         <label class="form-check-label" for="client">
                                             <i class="fas fa-user-tie me-1"></i>
-                                            <strong>Client</strong><br>
-                                            <small class="text-muted">I need marketing services</small>
+                                            <strong>{{ _('client') }}</strong><br>
+                                            <small class="text-muted">{{ _('client_desc') }}</small>
                                         </label>
                                     </div>
                                 </div>
@@ -31,8 +31,8 @@
                                         <input class="form-check-input" type="radio" name="role" id="pro" value="pro" required>
                                         <label class="form-check-label" for="pro">
                                             <i class="fas fa-users me-1"></i>
-                                            <strong>Professional</strong><br>
-                                            <small class="text-muted">I provide marketing services</small>
+                                            <strong>{{ _('professional') }}</strong><br>
+                                            <small class="text-muted">{{ _('professional_desc') }}</small>
                                         </label>
                                     </div>
                                 </div>
@@ -41,40 +41,40 @@
 
                         <!-- Full Name -->
                         <div class="mb-3">
-                            <label for="full_name" class="form-label">Full Name</label>
+                            <label for="full_name" class="form-label">{{ _('full_name') }}</label>
                             <input type="text" class="form-control" id="full_name" name="full_name" required>
                         </div>
 
                         <!-- Email -->
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
+                            <label for="email" class="form-label">{{ _('email_address') }}</label>
                             <input type="email" class="form-control" id="email" name="email" required>
                         </div>
 
                         <!-- Company Name (Optional) -->
                         <div class="mb-3">
-                            <label for="company_name" class="form-label">Company Name <small class="text-muted">(Optional)</small></label>
+                            <label for="company_name" class="form-label">{{ _('company_name') }} <small class="text-muted">{{ _('optional') }}</small></label>
                             <input type="text" class="form-control" id="company_name" name="company_name">
                         </div>
 
                         <!-- Password -->
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">{{ _('password') }}</label>
                             <input type="password" class="form-control" id="password" name="password" required minlength="6">
-                            <div class="form-text">Password must be at least 6 characters long.</div>
+                            <div class="form-text">{{ _('password_requirement') }}</div>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-user-plus me-2"></i>Create Account
+                                <i class="fas fa-user-plus me-2"></i>{{ _('create_account') }}
                             </button>
                         </div>
 
                         <!-- Login Link -->
                         <div class="text-center">
-                            <p class="mb-0">Already have an account? 
-                                <a href="{{ url_for('login') }}" class="text-decoration-none">Sign in here</a>
+                            <p class="mb-0">{{ _('already_have_account') }} 
+                                <a href="{{ url_for('login') }}" class="text-decoration-none">{{ _('sign_in_here') }}</a>
                             </p>
                         </div>
                     </form>

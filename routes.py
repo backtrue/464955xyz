@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash
 from app import app, db
 from models import User, Brief, Proposal
 from brief_generator import generate_brief_from_input
+from i18n import _, get_current_language, get_languages
 import logging
 
 # Initialize Flask-Login
@@ -19,7 +20,14 @@ def load_user(user_id):
 @app.route('/')
 def index():
     """Landing page"""
-    return render_template('index.html')
+    return render_template('index.html', _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/set_language/<language>')
+def set_language(language):
+    """Set language and redirect back"""
+    if language in app.config['LANGUAGES']:
+        session['language'] = language
+    return redirect(request.referrer or url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -34,30 +42,29 @@ def register():
         # Validation
         if not email or not password or not role or not full_name:
             flash('All fields are required.', 'error')
-            return render_template('register.html')
+            return render_template('register.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         if role not in ['client', 'pro']:
             flash('Invalid role selected.', 'error')
-            return render_template('register.html')
+            return render_template('register.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         if len(password) < 6:
             flash('Password must be at least 6 characters long.', 'error')
-            return render_template('register.html')
+            return render_template('register.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         # Check if user already exists
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash('Email address already registered.', 'error')
-            return render_template('register.html')
+            return render_template('register.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         # Create new user
         try:
-            user = User(
-                email=email,
-                role=role,
-                full_name=full_name,
-                company_name=company_name if company_name else None
-            )
+            user = User()
+            user.email = email
+            user.role = role
+            user.full_name = full_name
+            user.company_name = company_name if company_name else None
             user.set_password(password)
             
             db.session.add(user)
@@ -71,7 +78,7 @@ def register():
             logging.error(f"Registration error: {e}")
             flash('Registration failed. Please try again.', 'error')
     
-    return render_template('register.html')
+    return render_template('register.html', _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -98,7 +105,7 @@ def login():
         else:
             flash('Invalid email or password.', 'error')
     
-    return render_template('login.html')
+    return render_template('login.html', _=_, get_languages=get_languages, current_lang=get_current_language())
 
 @app.route('/logout')
 @login_required

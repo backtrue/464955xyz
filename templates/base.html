@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="{{ current_lang or 'en' }}" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Marketing Agency Platform{% endblock %}</title>
+    <title>{% block title %}{{ _('marketing_hub') }}{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i class="fas fa-handshake me-2"></i>
-                Marketing Hub
+                {{ _('marketing_hub') }}
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -31,18 +31,18 @@
                         {% if current_user.role == 'client' %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('client_dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                    <i class="fas fa-tachometer-alt me-1"></i>{{ _('dashboard') }}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('create_brief') }}">
-                                    <i class="fas fa-plus me-1"></i>Create Brief
+                                    <i class="fas fa-plus me-1"></i>{{ _('create_brief') }}
                                 </a>
                             </li>
                         {% elif current_user.role == 'pro' %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('pro_dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                    <i class="fas fa-tachometer-alt me-1"></i>{{ _('dashboard') }}
                                 </a>
                             </li>
                         {% endif %}
@@ -50,6 +50,24 @@
                 </ul>
                 
                 <ul class="navbar-nav">
+                    <!-- Language Selector -->
+                    <li class="nav-item dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe me-1"></i>{{ _('language') }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for lang_code, lang_name in get_languages().items() %}
+                                <li>
+                                    <a class="dropdown-item {% if current_lang == lang_code %}active{% endif %}" 
+                                       href="{{ url_for('set_language', language=lang_code) }}">
+                                        {{ lang_name }}
+                                        {% if current_lang == lang_code %}<i class="fas fa-check ms-2"></i>{% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    
                     {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -58,19 +76,19 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url_for('logout') }}">
-                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                    <i class="fas fa-sign-out-alt me-1"></i>{{ _('logout') }}
                                 </a></li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                                <i class="fas fa-sign-in-alt me-1"></i>{{ _('login') }}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('register') }}">
-                                <i class="fas fa-user-plus me-1"></i>Register
+                                <i class="fas fa-user-plus me-1"></i>{{ _('register') }}
                             </a>
                         </li>
                     {% endif %}
