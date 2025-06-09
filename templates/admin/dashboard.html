@@ -142,7 +142,7 @@
                                     <div>
                                         <strong>{{ brief.title }}</strong>
                                         <br>
-                                        <small class="text-muted">{{ brief.service_type.replace('_', ' ').title() }} • {{ brief.created_at.strftime('%Y-%m-%d') }}</small>
+                                        <small class="text-muted">{{ (brief.service_type or 'unknown').replace('_', ' ').title() }} • {{ brief.created_at.strftime('%Y-%m-%d') }}</small>
                                     </div>
                                     <a href="{{ url_for('admin_brief_detail', brief_id=brief.id) }}" class="btn btn-sm btn-outline-primary">{{ _('view') }}</a>
                                 </div>
