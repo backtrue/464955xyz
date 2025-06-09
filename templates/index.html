@@ -65,9 +65,9 @@
                     <div class="mb-3">
                         <i class="fas fa-magic fa-3x text-success"></i>
                     </div>
-                    <h5 class="card-title">Smart Brief Generation</h5>
+                    <h5 class="card-title">{{ _('smart_brief_generation') }}</h5>
                     <p class="card-text">
-                        Advanced algorithms analyze your requirements and create detailed project briefs with budget estimates, timelines, and recommended strategies.
+                        {{ _('smart_brief_desc') }}
                     </p>
                 </div>
             </div>
@@ -79,9 +79,9 @@
                     <div class="mb-3">
                         <i class="fas fa-users fa-3x text-info"></i>
                     </div>
-                    <h5 class="card-title">For Professionals</h5>
+                    <h5 class="card-title">{{ _('for_professionals') }}</h5>
                     <p class="card-text">
-                        Browse structured briefs, submit competitive proposals, and showcase your expertise to win new clients in the marketing industry.
+                        {{ _('for_professionals_desc') }}
                     </p>
                 </div>
             </div>
@@ -91,30 +91,30 @@
     <!-- How It Works -->
     <div class="row py-5">
         <div class="col-12 text-center mb-5">
-            <h2 class="display-6 fw-bold">How It Works</h2>
+            <h2 class="display-6 fw-bold">{{ _('how_it_works') }}</h2>
         </div>
         
         <div class="col-lg-6 mb-4">
             <div class="card bg-dark border-primary">
                 <div class="card-header bg-primary">
-                    <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>For Clients</h5>
+                    <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>{{ _('for_clients') }}</h5>
                 </div>
                 <div class="card-body">
                     <ol class="list-group list-group-flush">
                         <li class="list-group-item bg-transparent">
-                            <strong>1. Register</strong> as a client and complete your profile
+                            <strong>1.</strong> {{ _('client_step_1') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>2. Describe</strong> your marketing needs in natural language
+                            <strong>2.</strong> {{ _('client_step_2') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>3. Review</strong> the automatically generated structured brief
+                            <strong>3.</strong> {{ _('client_step_3') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>4. Publish</strong> your brief and receive proposals
+                            <strong>4.</strong> {{ _('client_step_4') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>5. Choose</strong> the best professional for your project
+                            <strong>5.</strong> {{ _('client_step_5') }}
                         </li>
                     </ol>
                 </div>
@@ -124,24 +124,24 @@
         <div class="col-lg-6 mb-4">
             <div class="card bg-dark border-success">
                 <div class="card-header bg-success">
-                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>For Professionals</h5>
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>{{ _('for_professionals') }}</h5>
                 </div>
                 <div class="card-body">
                     <ol class="list-group list-group-flush">
                         <li class="list-group-item bg-transparent">
-                            <strong>1. Register</strong> as a professional and build your profile
+                            <strong>1.</strong> {{ _('pro_step_1') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>2. Browse</strong> available project briefs
+                            <strong>2.</strong> {{ _('pro_step_2') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>3. Submit</strong> detailed proposals with pricing
+                            <strong>3.</strong> {{ _('pro_step_3') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>4. Showcase</strong> your portfolio and expertise
+                            <strong>4.</strong> {{ _('pro_step_4') }}
                         </li>
                         <li class="list-group-item bg-transparent">
-                            <strong>5. Win</strong> projects and grow your business
+                            <strong>5.</strong> {{ _('pro_step_5') }}
                         </li>
                     </ol>
                 </div>
@@ -155,10 +155,10 @@
         <div class="col-12 text-center">
             <div class="card bg-primary text-white">
                 <div class="card-body py-5">
-                    <h3 class="card-title">Ready to Get Started?</h3>
-                    <p class="card-text lead">Join our platform and connect with the right marketing professionals today.</p>
+                    <h3 class="card-title">{{ _('ready_to_get_started') }}</h3>
+                    <p class="card-text lead">{{ _('join_platform_desc') }}</p>
                     <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
-                        <i class="fas fa-rocket me-2"></i>Start Now
+                        <i class="fas fa-rocket me-2"></i>{{ _('start_now') }}
                     </a>
                 </div>
             </div>

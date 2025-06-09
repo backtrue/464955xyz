@@ -153,6 +153,9 @@ TRANSLATIONS = {
         'preferred_platforms': 'Preferred Platforms',
         'posted': 'Posted',
         'proposals_for': 'Proposals for',
+        'ready_to_get_started': 'Ready to Get Started?',
+        'join_platform_desc': 'Join our platform and connect with the right marketing professionals today.',
+        'start_now': 'Start Now',
     },
     
     'zh': {
@@ -301,6 +304,9 @@ TRANSLATIONS = {
         'preferred_platforms': '偏好平台',
         'posted': '發布於',
         'proposals_for': '提案 -',
+        'ready_to_get_started': '準備好開始了嗎？',
+        'join_platform_desc': '加入我們的平台，今天就與合適的行銷專業人士聯繫。',
+        'start_now': '立即開始',
     },
     
     'ja': {
@@ -449,6 +455,9 @@ TRANSLATIONS = {
         'preferred_platforms': '希望プラットフォーム',
         'posted': '投稿日',
         'proposals_for': '提案 -',
+        'ready_to_get_started': 'Ready to Get Started?',
+        'join_platform_desc': 'Join our platform and connect with the right marketing professionals today.',
+        'start_now': 'Start Now',
     }
 }
 
