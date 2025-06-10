@@ -408,6 +408,16 @@ TRANSLATIONS = {
         'view_public_profile': 'View Public Profile',
         'browse_professionals': 'Browse Professionals',
         'find_professionals': 'Find Marketing Professionals',
+        'profile_url': 'Profile URL',
+        'profile_url_help': 'Create a custom URL for your professional profile (3-50 characters, letters, numbers, and hyphens only)',
+        'invalid_profile_slug_format': 'Profile URL must be 3-50 characters long and contain only letters, numbers, and hyphens.',
+        'profile_slug_already_taken': 'This profile URL is already taken. Please choose another one.',
+        'your_professional_profile': 'Your Professional Profile',
+        'profile_visibility_description': 'Your public profile showcases your skills and experience to potential clients.',
+        'your_profile_url': 'Your Profile URL',
+        'no_custom_url_set': 'No custom URL set. Using default ID-based URL.',
+        'view_profile': 'View Profile',
+        'edit_profile': 'Edit Profile',
     },
     
     'zh': {
@@ -722,6 +732,16 @@ TRANSLATIONS = {
         'view_public_profile': '查看公開檔案',
         'browse_professionals': '瀏覽專業人士',
         'find_professionals': '尋找行銷專業人士',
+        'profile_url': '個人檔案網址',
+        'profile_url_help': '為您的專業檔案建立自訂網址（3-50個字符，僅限字母、數字和連字符）',
+        'invalid_profile_slug_format': '檔案網址必須為3-50個字符，僅包含字母、數字和連字符。',
+        'profile_slug_already_taken': '此檔案網址已被使用，請選擇其他網址。',
+        'your_professional_profile': '您的專業檔案',
+        'profile_visibility_description': '您的公開檔案向潛在客戶展示您的技能和經驗。',
+        'your_profile_url': '您的檔案網址',
+        'no_custom_url_set': '尚未設定自訂網址，正在使用預設的ID網址。',
+        'view_profile': '查看檔案',
+        'edit_profile': '編輯檔案',
     },
     
     'ja': {
@@ -998,6 +1018,16 @@ TRANSLATIONS = {
         'view_public_profile': '公開プロフィールを見る',
         'browse_professionals': '専門家を閲覧',
         'find_professionals': 'マーケティング専門家を探す',
+        'profile_url': 'プロフィールURL',
+        'profile_url_help': 'プロフェッショナルプロフィール用のカスタムURLを作成（3-50文字、英数字とハイフンのみ）',
+        'invalid_profile_slug_format': 'プロフィールURLは3-50文字で、英数字とハイフンのみ使用可能です。',
+        'profile_slug_already_taken': 'このプロフィールURLは既に使用されています。別のものを選択してください。',
+        'your_professional_profile': 'あなたのプロフェッショナルプロフィール',
+        'profile_visibility_description': '公開プロフィールは、潜在的なクライアントにあなたのスキルと経験を紹介します。',
+        'your_profile_url': 'あなたのプロフィールURL',
+        'no_custom_url_set': 'カスタムURLが設定されていません。デフォルトのID-URLを使用しています。',
+        'view_profile': 'プロフィールを見る',
+        'edit_profile': 'プロフィールを編集',
     }
 }
 

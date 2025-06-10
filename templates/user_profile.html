@@ -189,6 +189,18 @@
                         <input type="email" class="form-control" id="email" name="email" 
                                value="{{ current_user.email }}" required maxlength="255">
                     </div>
+                    {% if current_user.role == 'pro' %}
+                    <div class="mb-3">
+                        <label for="profile_slug" class="form-label">{{ _('profile_url') }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text">{{ request.host_url }}professional/</span>
+                            <input type="text" class="form-control" id="profile_slug" name="profile_slug" 
+                                   value="{{ current_user.profile_slug or '' }}" placeholder="your-name" 
+                                   pattern="[a-zA-Z0-9-]{3,50}" maxlength="50">
+                        </div>
+                        <div class="form-text">{{ _('profile_url_help') }}</div>
+                    </div>
+                    {% endif %}
                     <hr>
                     <h6>{{ _('change_password') }}</h6>
                     <p class="text-muted small">{{ _('change_password_help') }}</p>
