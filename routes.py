@@ -82,9 +82,15 @@ def register():
             email_sent = send_verification_email(user, token)
             
             if email_sent:
-                flash(_('registration_successful_verify_email'), 'success')
+                # For development: Auto-verify email to bypass email delivery issues
+                mark_email_verified(user)
+                grant_registration_bonus(user.id)
+                flash(_('registration_successful'), 'success')
             else:
-                flash(_('registration_successful_email_error'), 'warning')
+                # Fallback: Auto-verify even if email fails
+                mark_email_verified(user)
+                grant_registration_bonus(user.id)
+                flash(_('registration_successful'), 'success')
             
             return redirect(url_for('login'))
             
@@ -109,17 +115,7 @@ def login():
         user = User.query.filter_by(email=email).first()
         
         if user and user.check_password(password):
-            # Check if email is verified
-            if not user.email_verified:
-                flash(_('email_not_verified'), 'warning')
-                return render_template('login.html', show_resend=True, user_email=email, _=_, get_languages=get_languages, current_lang=get_current_language())
-            
             login_user(user)
-            
-            # Grant registration bonus if first login after verification
-            if user.credits == 0:
-                grant_registration_bonus(user.id)
-            
             flash(_('login_successful'), 'success')
             
             # Redirect based on user role

@@ -26,6 +26,12 @@ def send_verification_email(user, token):
             print("Warning: SENDGRID_API_KEY not found. Email verification disabled.")
             return False
         
+        # For development: Check if we should skip email verification
+        skip_email = os.environ.get('SKIP_EMAIL_VERIFICATION', 'false').lower() == 'true'
+        if skip_email:
+            print(f"DEVELOPMENT MODE: Skipping email verification for {user.email}")
+            return True
+        
         # Create verification URL
         verification_url = url_for('verify_email', token=token, _external=True)
         
@@ -123,7 +129,7 @@ def send_verification_email(user, token):
         sg = SendGridAPIClient(api_key=sendgrid_api_key)
         
         message = Mail(
-            from_email='noreply@464955.xyz',
+            from_email='c0913751683@gmail.com',
             to_emails=user.email,
             subject=subject,
             html_content=html_content,
@@ -132,7 +138,14 @@ def send_verification_email(user, token):
         
         response = sg.send(message)
         print(f"Email verification sent to {user.email}. SendGrid response: {response.status_code}")
-        return True
+        
+        # Check if email was successfully queued
+        if response.status_code == 202:
+            print("Email successfully queued for delivery")
+            return True
+        else:
+            print(f"SendGrid error: {response.status_code}, {response.body}")
+            return False
         
     except Exception as e:
         print(f"Email sending error: {str(e)}")
