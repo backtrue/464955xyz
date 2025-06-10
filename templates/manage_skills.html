@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('skill_management') }} - 464955{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>{{ _('skill_management') }}</h1>
+                <div>
+                    <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addSkillModal">
+                        <i class="fas fa-plus me-1"></i>{{ _('add_skill') }}
+                    </button>
+                    <a href="{{ url_for('pro_dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>{{ _('back_to_dashboard') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Overview -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ skills|length }}</h3>
+                    <p class="text-muted mb-0">{{ _('total_skills') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">{{ skills|selectattr('category', 'equalto', 'meta_ads')|list|length }}</h3>
+                    <p class="text-muted mb-0">{{ _('meta_ads_skills') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-info">{{ (skills|map(attribute='proficiency_level')|sum / skills|length)|round(1) if skills else 0 }}</h3>
+                    <p class="text-muted mb-0">{{ _('average_proficiency') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills by Category -->
+    {% set categories = ['meta_ads', 'google_ads', 'seo'] %}
+    {% for category in categories %}
+    {% set category_skills = skills|selectattr('category', 'equalto', category)|list %}
+    
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-{{ 'facebook' if category == 'meta_ads' else 'google' if category == 'google_ads' else 'search' }} me-2"></i>
+                {% if category == 'meta_ads' %}{{ _('meta_ads_category') }}
+                {% elif category == 'google_ads' %}{{ _('google_ads_category') }}
+                {% elif category == 'seo' %}{{ _('seo_category') }}
+                {% endif %}
+            </h5>
+            <span class="badge bg-secondary">{{ category_skills|length }} {{ _('skills') }}</span>
+        </div>
+        <div class="card-body">
+            {% if category_skills %}
+                <div id="skills-{{ category }}" class="sortable-skills">
+                    {% for skill in category_skills %}
+                    <div class="skill-item border rounded p-3 mb-3" data-skill-id="{{ skill.id }}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-grip-vertical text-muted me-2 drag-handle" style="cursor: move;"></i>
+                                    <h6 class="mb-0 fw-bold">{{ skill.skill_name }}</h6>
+                                    <div class="ms-auto">
+                                        {% for i in range(1, 6) %}
+                                            <i class="fas fa-star {% if i <= skill.proficiency_level %}text-warning{% else %}text-muted{% endif %}"></i>
+                                        {% endfor %}
+                                        <span class="ms-2 text-muted">({{ skill.proficiency_level }}/5)</span>
+                                    </div>
+                                </div>
+                                
+                                {% if skill.notes %}
+                                <p class="text-muted mb-2 small">{{ skill.notes }}</p>
+                                {% endif %}
+                                
+                                {% if skill.portfolio_link %}
+                                <div class="mb-2">
+                                    <a href="{{ skill.portfolio_link }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-external-link-alt me-1"></i>{{ _('view_portfolio') }}
+                                    </a>
+                                </div>
+                                {% endif %}
+                                
+                                <small class="text-muted">{{ _('added_on') }}: {{ skill.created_at.strftime('%Y-%m-%d') }}</small>
+                            </div>
+                            <div class="ms-3">
+                                <button type="button" class="btn btn-sm btn-outline-secondary me-1" 
+                                        onclick="editSkill('{{ skill.id }}', '{{ skill.category }}', '{{ skill.skill_name }}', '{{ skill.proficiency_level }}', '{{ skill.notes or '' }}', '{{ skill.portfolio_link or '' }}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <form action="{{ url_for('delete_skill', skill_id=skill.id) }}" method="POST" class="d-inline" 
+                                      onsubmit="return confirm('{{ _('confirm_delete_skill') }}')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-plus-circle fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">{{ _('no_skills_in_category') }}</h5>
+                    <p class="text-muted">{{ _('add_first_skill_hint') }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ _('add_new_skill') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('add_skill') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">{{ _('category') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">{{ _('select_category') }}</option>
+                            <option value="meta_ads">{{ _('meta_ads_category') }}</option>
+                            <option value="google_ads">{{ _('google_ads_category') }}</option>
+                            <option value="seo">{{ _('seo_category') }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skill_name" class="form-label">{{ _('skill_name') }} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="skill_name" name="skill_name" required maxlength="100">
+                        <div class="form-text">{{ _('skill_name_examples') }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="proficiency_level" class="form-label">{{ _('proficiency_level') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="proficiency_level" name="proficiency_level" required>
+                            <option value="1">1 - {{ _('beginner') }}</option>
+                            <option value="2">2 - {{ _('novice') }}</option>
+                            <option value="3">3 - {{ _('intermediate') }}</option>
+                            <option value="4">4 - {{ _('advanced') }}</option>
+                            <option value="5">5 - {{ _('expert') }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">{{ _('notes') }}</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="{{ _('notes_placeholder') }}"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="portfolio_link" class="form-label">{{ _('portfolio_link') }}</label>
+                        <input type="url" class="form-control" id="portfolio_link" name="portfolio_link" placeholder="https://...">
+                        <div class="form-text">{{ _('portfolio_link_help') }}</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('cancel') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ _('add_skill') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Skill Modal -->
+<div class="modal fade" id="editSkillModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ _('edit_skill') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editSkillForm" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="edit_category" class="form-label">{{ _('category') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="edit_category" name="category" required>
+                            <option value="meta_ads">{{ _('meta_ads_category') }}</option>
+                            <option value="google_ads">{{ _('google_ads_category') }}</option>
+                            <option value="seo">{{ _('seo_category') }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_skill_name" class="form-label">{{ _('skill_name') }} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="edit_skill_name" name="skill_name" required maxlength="100">
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_proficiency_level" class="form-label">{{ _('proficiency_level') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="edit_proficiency_level" name="proficiency_level" required>
+                            <option value="1">1 - {{ _('beginner') }}</option>
+                            <option value="2">2 - {{ _('novice') }}</option>
+                            <option value="3">3 - {{ _('intermediate') }}</option>
+                            <option value="4">4 - {{ _('advanced') }}</option>
+                            <option value="5">5 - {{ _('expert') }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_notes" class="form-label">{{ _('notes') }}</label>
+                        <textarea class="form-control" id="edit_notes" name="notes" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_portfolio_link" class="form-label">{{ _('portfolio_link') }}</label>
+                        <input type="url" class="form-control" id="edit_portfolio_link" name="portfolio_link">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('cancel') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ _('update_skill') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+// Initialize sortable for each category
+document.addEventListener('DOMContentLoaded', function() {
+    const categories = ['meta_ads', 'google_ads', 'seo'];
+    
+    categories.forEach(category => {
+        const container = document.getElementById(`skills-${category}`);
+        if (container) {
+            new Sortable(container, {
+                handle: '.drag-handle',
+                animation: 150,
+                onEnd: function(evt) {
+                    updateSkillOrder(category);
+                }
+            });
+        }
+    });
+});
+
+function updateSkillOrder(category) {
+    const container = document.getElementById(`skills-${category}`);
+    const skillItems = container.querySelectorAll('.skill-item');
+    const skillIds = Array.from(skillItems).map(item => item.dataset.skillId);
+    
+    fetch('/skills/reorder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            skill_ids: skillIds
+        })
+    })
+    .catch(error => {
+        console.error('Error updating order:', error);
+    });
+}
+
+function editSkill(id, category, skillName, proficiencyLevel, notes, portfolioLink) {
+    document.getElementById('editSkillForm').action = `/skills/${id}/edit`;
+    document.getElementById('edit_category').value = category;
+    document.getElementById('edit_skill_name').value = skillName;
+    document.getElementById('edit_proficiency_level').value = proficiencyLevel;
+    document.getElementById('edit_notes').value = notes;
+    document.getElementById('edit_portfolio_link').value = portfolioLink;
+    
+    const modal = new bootstrap.Modal(document.getElementById('editSkillModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

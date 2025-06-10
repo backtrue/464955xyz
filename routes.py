@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, flash, session, j
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from app import app, db
-from models import User, Brief, Proposal
+from models import User, Brief, Proposal, ProfessionalSkill
 from brief_generator import generate_brief_from_input
 from openai_helper import generate_structured_brief
 from admin_utils import superadmin_required, get_user_stats
@@ -484,6 +484,163 @@ def update_profile():
         app.logger.error(f"Profile update error: {str(e)}")
     
     return redirect(url_for('user_profile'))
+
+# Professional Skills Management Routes
+@app.route('/skills')
+@login_required
+def manage_skills():
+    """Manage professional skills for pro users"""
+    if current_user.role != 'pro':
+        flash(_('access_denied_pro_only'), 'error')
+        return redirect(url_for('index'))
+    
+    skills = ProfessionalSkill.query.filter_by(user_id=current_user.id).order_by(ProfessionalSkill.display_order, ProfessionalSkill.created_at).all()
+    return render_template('manage_skills.html', skills=skills, _=_, get_languages=get_languages, current_lang=get_current_language())
+
+@app.route('/skills/add', methods=['POST'])
+@login_required
+def add_skill():
+    """Add a new professional skill"""
+    if current_user.role != 'pro':
+        flash(_('access_denied_pro_only'), 'error')
+        return redirect(url_for('index'))
+    
+    try:
+        category = request.form.get('category', '').strip()
+        skill_name = request.form.get('skill_name', '').strip()
+        proficiency_level = int(request.form.get('proficiency_level', 1))
+        notes = request.form.get('notes', '').strip()
+        portfolio_link = request.form.get('portfolio_link', '').strip()
+        
+        # Validate required fields
+        if not category or category not in ['meta_ads', 'google_ads', 'seo']:
+            flash(_('invalid_category'), 'error')
+            return redirect(url_for('manage_skills'))
+            
+        if not skill_name:
+            flash(_('skill_name_required'), 'error')
+            return redirect(url_for('manage_skills'))
+            
+        if proficiency_level < 1 or proficiency_level > 5:
+            flash(_('invalid_proficiency_level'), 'error')
+            return redirect(url_for('manage_skills'))
+        
+        # Get next display order
+        max_order = db.session.query(db.func.max(ProfessionalSkill.display_order)).filter_by(user_id=current_user.id).scalar() or 0
+        
+        # Create new skill
+        skill = ProfessionalSkill(
+            user_id=current_user.id,
+            category=category,
+            skill_name=skill_name,
+            proficiency_level=proficiency_level,
+            notes=notes if notes else None,
+            portfolio_link=portfolio_link if portfolio_link else None,
+            display_order=max_order + 1
+        )
+        
+        db.session.add(skill)
+        db.session.commit()
+        
+        flash(_('skill_added_successfully'), 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(_('skill_add_error'), 'error')
+        app.logger.error(f"Add skill error: {str(e)}")
+    
+    return redirect(url_for('manage_skills'))
+
+@app.route('/skills/<int:skill_id>/edit', methods=['POST'])
+@login_required
+def edit_skill(skill_id):
+    """Edit an existing professional skill"""
+    if current_user.role != 'pro':
+        flash(_('access_denied_pro_only'), 'error')
+        return redirect(url_for('index'))
+    
+    skill = ProfessionalSkill.query.filter_by(id=skill_id, user_id=current_user.id).first_or_404()
+    
+    try:
+        category = request.form.get('category', '').strip()
+        skill_name = request.form.get('skill_name', '').strip()
+        proficiency_level = int(request.form.get('proficiency_level', 1))
+        notes = request.form.get('notes', '').strip()
+        portfolio_link = request.form.get('portfolio_link', '').strip()
+        
+        # Validate required fields
+        if not category or category not in ['meta_ads', 'google_ads', 'seo']:
+            flash(_('invalid_category'), 'error')
+            return redirect(url_for('manage_skills'))
+            
+        if not skill_name:
+            flash(_('skill_name_required'), 'error')
+            return redirect(url_for('manage_skills'))
+            
+        if proficiency_level < 1 or proficiency_level > 5:
+            flash(_('invalid_proficiency_level'), 'error')
+            return redirect(url_for('manage_skills'))
+        
+        # Update skill
+        skill.category = category
+        skill.skill_name = skill_name
+        skill.proficiency_level = proficiency_level
+        skill.notes = notes if notes else None
+        skill.portfolio_link = portfolio_link if portfolio_link else None
+        
+        db.session.commit()
+        flash(_('skill_updated_successfully'), 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(_('skill_update_error'), 'error')
+        app.logger.error(f"Edit skill error: {str(e)}")
+    
+    return redirect(url_for('manage_skills'))
+
+@app.route('/skills/<int:skill_id>/delete', methods=['POST'])
+@login_required
+def delete_skill(skill_id):
+    """Delete a professional skill"""
+    if current_user.role != 'pro':
+        flash(_('access_denied_pro_only'), 'error')
+        return redirect(url_for('index'))
+    
+    skill = ProfessionalSkill.query.filter_by(id=skill_id, user_id=current_user.id).first_or_404()
+    
+    try:
+        db.session.delete(skill)
+        db.session.commit()
+        flash(_('skill_deleted_successfully'), 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(_('skill_delete_error'), 'error')
+        app.logger.error(f"Delete skill error: {str(e)}")
+    
+    return redirect(url_for('manage_skills'))
+
+@app.route('/skills/reorder', methods=['POST'])
+@login_required
+def reorder_skills():
+    """Reorder professional skills"""
+    if current_user.role != 'pro':
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
+    
+    try:
+        skill_ids = request.json.get('skill_ids', [])
+        
+        for index, skill_id in enumerate(skill_ids):
+            skill = ProfessionalSkill.query.filter_by(id=skill_id, user_id=current_user.id).first()
+            if skill:
+                skill.display_order = index + 1
+        
+        db.session.commit()
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 # API Routes
 @app.route('/api/generate-brief', methods=['POST'])

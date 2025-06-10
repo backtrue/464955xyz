@@ -148,3 +148,28 @@ class CreditTransaction(db.Model):
     
     def __repr__(self):
         return f'<CreditTransaction {self.id}: {self.amount} credits for user {self.user_id}>'
+
+class ProfessionalSkill(db.Model):
+    __tablename__ = 'professional_skills'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    category = db.Column(db.Enum('meta_ads', 'google_ads', 'seo', name='skill_categories'), nullable=False)
+    skill_name = db.Column(db.String(100), nullable=False)
+    proficiency_level = db.Column(db.Integer, nullable=False, default=1)  # 1-5 scale
+    notes = db.Column(db.Text, nullable=True)
+    portfolio_link = db.Column(db.String(500), nullable=True)
+    display_order = db.Column(db.Integer, nullable=False, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', backref='professional_skills')
+    
+    # Constraints
+    __table_args__ = (
+        db.CheckConstraint('proficiency_level >= 1 AND proficiency_level <= 5', name='check_proficiency_level'),
+    )
+    
+    def __repr__(self):
+        return f'<ProfessionalSkill {self.skill_name} ({self.category}) - Level {self.proficiency_level}>'
