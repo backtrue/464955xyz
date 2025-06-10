@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import check_password_hash
 from app import app, db
 from models import User, Brief, Proposal, ProfessionalSkill
+from email_verification import create_verification_token, send_verification_email, verify_token, mark_email_verified, resend_verification_email
 from brief_generator import generate_brief_from_input
 from openai_helper import generate_structured_brief
 from admin_utils import superadmin_required, get_user_stats
@@ -63,19 +64,28 @@ def register():
             flash('Email address already registered.', 'error')
             return render_template('register.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
-        # Create new user
+        # Create new user (unverified)
         try:
             user = User()
             user.email = email
             user.role = role
             user.full_name = full_name
             user.company_name = company_name if company_name else None
+            user.email_verified = False
             user.set_password(password)
             
             db.session.add(user)
             db.session.commit()
             
-            flash('Registration successful! Please log in.', 'success')
+            # Generate and send verification email
+            token = create_verification_token(user)
+            email_sent = send_verification_email(user, token)
+            
+            if email_sent:
+                flash(_('registration_successful_verify_email'), 'success')
+            else:
+                flash(_('registration_successful_email_error'), 'warning')
+            
             return redirect(url_for('login'))
             
         except Exception as e:
@@ -99,16 +109,28 @@ def login():
         user = User.query.filter_by(email=email).first()
         
         if user and user.check_password(password):
+            # Check if email is verified
+            if not user.email_verified:
+                flash(_('email_not_verified'), 'warning')
+                return render_template('login.html', show_resend=True, user_email=email, _=_, get_languages=get_languages, current_lang=get_current_language())
+            
             login_user(user)
-            flash('Logged in successfully!', 'success')
+            
+            # Grant registration bonus if first login after verification
+            if user.credits == 0:
+                grant_registration_bonus(user.id)
+            
+            flash(_('login_successful'), 'success')
             
             # Redirect based on user role
             if user.role == 'client':
                 return redirect(url_for('client_dashboard'))
+            elif user.role == 'superadmin':
+                return redirect(url_for('admin_dashboard'))
             else:
                 return redirect(url_for('pro_dashboard'))
         else:
-            flash('Invalid email or password.', 'error')
+            flash(_('invalid_credentials'), 'error')
     
     return render_template('login.html', _=_, get_languages=get_languages, current_lang=get_current_language())
 
