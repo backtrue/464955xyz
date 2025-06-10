@@ -80,6 +80,7 @@ TRANSLATIONS = {
         'invalid_verification_token': 'Invalid or expired verification token.',
         'login_successful': 'Logged in successfully!',
         'invalid_credentials': 'Invalid email or password.',
+        'you_can_now_login': 'You can now log in to your account.',
         
         # Dashboard
         'client_dashboard': 'Client Dashboard',

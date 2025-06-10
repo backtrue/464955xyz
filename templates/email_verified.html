@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('email_verified_successfully') }} - 464955.xyz{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center py-5">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="mb-3">{{ _('email_verified_successfully') }}</h2>
+                    <p class="text-muted mb-4">{{ _('you_can_now_login') }}</p>
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>{{ _('sign_in') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

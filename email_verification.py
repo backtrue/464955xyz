@@ -2,13 +2,14 @@
 Email verification utility functions for user registration
 """
 import secrets
-import smtplib
+import os
 from datetime import datetime, timedelta
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from flask import url_for, request
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from app import db
 from models import User
+from i18n import _
 
 
 def generate_verification_token():
@@ -17,8 +18,14 @@ def generate_verification_token():
 
 
 def send_verification_email(user, token):
-    """Send email verification email to user"""
+    """Send email verification email to user using SendGrid"""
     try:
+        # Check if SendGrid API key is available
+        sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
+        if not sendgrid_api_key:
+            print("Warning: SENDGRID_API_KEY not found. Email verification disabled.")
+            return False
+        
         # Create verification URL
         verification_url = url_for('verify_email', token=token, _external=True)
         
@@ -112,12 +119,19 @@ def send_verification_email(user, token):
         © 2024 464955. All rights reserved.
         """
         
-        # For now, we'll return True to indicate success
-        # In production, you would implement actual email sending here
-        print(f"EMAIL VERIFICATION: Would send email to {user.email}")
-        print(f"Verification URL: {verification_url}")
-        print("=" * 50)
+        # Send email using SendGrid
+        sg = SendGridAPIClient(api_key=sendgrid_api_key)
         
+        message = Mail(
+            from_email='noreply@464955.xyz',
+            to_emails=user.email,
+            subject=subject,
+            html_content=html_content,
+            plain_text_content=text_content
+        )
+        
+        response = sg.send(message)
+        print(f"Email verification sent to {user.email}. SendGrid response: {response.status_code}")
         return True
         
     except Exception as e:
@@ -164,7 +178,7 @@ def resend_verification_email(user):
     """Resend verification email to user"""
     # Check if user already verified
     if user.email_verified:
-        return False, "電子郵件已經通過驗證"
+        return False, _('email_already_verified')
     
     # Check rate limiting (prevent spam - max 1 email per 5 minutes)
     if user.email_verification_sent_at:
@@ -178,6 +192,6 @@ def resend_verification_email(user):
     success = send_verification_email(user, token)
     
     if success:
-        return True, "驗證郵件已重新發送，請檢查您的收件匣"
+        return True, _('verification_email_sent')
     else:
-        return False, "發送驗證郵件時發生錯誤，請稍後重試"
+        return False, _('verification_email_error')
