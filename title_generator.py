@@ -7,7 +7,7 @@ from openai_helper import generate_structured_brief
 import os
 from openai import OpenAI
 
-def generate_optimized_title(service_type, budget_min, budget_max, raw_input, structured_brief=None):
+def generate_optimized_title(service_type, budget_min, budget_max, raw_input, structured_brief=None, budget_currency='USD'):
     """
     Generate optimized title in format: {服務類型}|{月預算}|{AI摘要}
     Maximum 60 Chinese characters
@@ -22,16 +22,24 @@ def generate_optimized_title(service_type, budget_min, budget_max, raw_input, st
         
         service_name = service_type_map.get(service_type, service_type)
         
-        # Budget formatting
+        # Budget formatting with currency
+        currency_symbols = {
+            'USD': '$',
+            'TWD': 'NT$',
+            'JPY': '¥'
+        }
+        
+        currency_symbol = currency_symbols.get(budget_currency, '$')
+        
         if budget_min and budget_max:
             if budget_min == budget_max:
-                budget_text = f"${budget_min:,}/月"
+                budget_text = f"{currency_symbol}{budget_min:,}/月"
             else:
-                budget_text = f"${budget_min:,}-{budget_max:,}/月"
+                budget_text = f"{currency_symbol}{budget_min:,}-{budget_max:,}/月"
         elif budget_min:
-            budget_text = f"${budget_min:,}+/月"
+            budget_text = f"{currency_symbol}{budget_min:,}+/月"
         elif budget_max:
-            budget_text = f"${budget_max:,}以下/月"
+            budget_text = f"{currency_symbol}{budget_max:,}以下/月"
         else:
             budget_text = "預算面議"
         

@@ -267,8 +267,9 @@ def create_brief():
             # Generate optimized title using new format
             optimized_title = generate_optimized_title(
                 service_type=service_type,
-                budget_min=brief_data.get('budget_min'),
-                budget_max=brief_data.get('budget_max'),
+                budget_min=budget_min or brief_data.get('budget_min'),
+                budget_max=budget_max or brief_data.get('budget_max'),
+                budget_currency=budget_currency,
                 raw_input=raw_input,
                 structured_brief=structured_brief
             )
@@ -282,8 +283,9 @@ def create_brief():
                 title=optimized_title,
                 description=brief_data['description'],
                 platform_preference=brief_data['platform_preference'],
-                budget_min=brief_data['budget_min'],
-                budget_max=brief_data['budget_max'],
+                budget_min=budget_min or brief_data['budget_min'],
+                budget_max=budget_max or brief_data['budget_max'],
+                budget_currency=budget_currency,
                 suggested_items=brief_data['suggested_items'],
                 duration_weeks=brief_data['duration_weeks'],
                 marketing_goals=brief_data['marketing_goals'],
