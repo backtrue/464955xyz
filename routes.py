@@ -814,7 +814,7 @@ def professional_profile(slug):
 @app.route('/api/generate-brief', methods=['POST'])
 @login_required
 def api_generate_brief():
-    """API endpoint to generate structured brief using OpenAI"""
+    """API endpoint to analyze client requirements and generate professional brief"""
     try:
         data = request.get_json()
         raw_input = data.get('raw_input', '').strip()
@@ -832,24 +832,25 @@ def api_generate_brief():
                 'error': '請選擇有效的服務類型'
             }), 400
         
-        # Generate structured brief using OpenAI
-        structured_brief = generate_structured_brief(raw_input, service_type)
+        # Analyze client requirements using intelligent analysis
+        from openai_helper import analyze_client_requirements
+        professional_brief = analyze_client_requirements(raw_input, service_type)
         
-        # Parse structured brief to extract target audience and marketing goals
-        parsed_data = parse_structured_brief(structured_brief)
+        # Parse the professional brief to extract structured data for database storage
+        parsed_data = parse_structured_brief(professional_brief)
         
         return jsonify({
             'success': True,
-            'structured_brief': structured_brief,
+            'structured_brief': professional_brief,
             'target_audience': parsed_data['target_audience'],
             'marketing_goals': parsed_data['marketing_goals']
         })
         
     except Exception as e:
-        logging.error(f"Error generating structured brief: {e}")
+        logging.error(f"Error analyzing client requirements: {e}")
         return jsonify({
             'success': False,
-            'error': f'生成失敗: {str(e)}'
+            'error': f'分析失敗: {str(e)}'
         }), 500
 
 # Admin Routes

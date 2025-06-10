@@ -178,9 +178,9 @@
                         <!-- AI Brief Generation -->
                         <div class="mb-4">
                             <button type="button" class="btn btn-info btn-lg w-100" id="generateBriefBtn" onclick="generateStructuredBrief()">
-                                <i class="fas fa-magic me-2"></i>{{ _('generate_structured_brief') }}
+                                <i class="fas fa-brain me-2"></i>🤖 智能分析需求並生成專業 Brief
                             </button>
-                            <div class="form-text text-center mt-2">{{ _('ai_brief_help') }}</div>
+                            <div class="form-text text-center mt-2">讓 AI 分析您的需求，生成包含產業分析、目標受眾、風險評估等專業資訊的 Brief，幫助行銷專家快速判斷接案價值</div>
                         </div>
 
                         <!-- Generated Brief Display -->
@@ -315,7 +315,7 @@ async function generateStructuredBrief() {
     
     // Show loading state
     generateBtn.disabled = true;
-    generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>正在生成中...';
+    generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>🧠 正在智能分析需求中...';
     
     try {
         const response = await fetch('/api/generate-brief', {
