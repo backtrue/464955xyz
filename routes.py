@@ -142,6 +142,43 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
 
+# Email Verification Routes
+@app.route('/verify-email/<token>')
+def verify_email(token):
+    """Verify user email with token"""
+    user, error = verify_token(token)
+    
+    if error:
+        flash(error, 'error')
+        return redirect(url_for('login'))
+    
+    if user.email_verified:
+        flash(_('email_already_verified'), 'info')
+        return redirect(url_for('login'))
+    
+    # Mark email as verified
+    mark_email_verified(user)
+    flash(_('email_verified_successfully'), 'success')
+    return redirect(url_for('login'))
+
+@app.route('/resend-verification', methods=['POST'])
+def resend_verification():
+    """Resend verification email"""
+    email = request.form.get('email', '').strip()
+    
+    if not email:
+        flash(_('email_required'), 'error')
+        return redirect(url_for('login'))
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash(_('user_not_found'), 'error')
+        return redirect(url_for('login'))
+    
+    success, message = resend_verification_email(user)
+    flash(message, 'success' if success else 'error')
+    return redirect(url_for('login'))
+
 @app.route('/client/dashboard')
 @login_required
 def client_dashboard():

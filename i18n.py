@@ -64,6 +64,23 @@ TRANSLATIONS = {
         'dont_have_account': "Don't have an account?",
         'register_here': 'Register here',
         
+        # Email Verification
+        'registration_successful_verify_email': 'Registration successful! Please check your email to verify your account.',
+        'registration_successful_email_error': 'Registration successful! However, we couldn\'t send the verification email. Please try resending it.',
+        'email_not_verified': 'Please verify your email address before logging in.',
+        'email_verification_required': 'Email Verification Required',
+        'please_verify_email_to_continue': 'Please check your email and click the verification link to continue.',
+        'resend_verification_email': 'Resend Verification Email',
+        'email_already_verified': 'Your email is already verified.',
+        'email_verified_successfully': 'Email verified successfully! You can now log in.',
+        'email_required': 'Email address is required.',
+        'user_not_found': 'User not found.',
+        'verification_email_sent': 'Verification email sent successfully.',
+        'verification_email_error': 'Failed to send verification email. Please try again.',
+        'invalid_verification_token': 'Invalid or expired verification token.',
+        'login_successful': 'Logged in successfully!',
+        'invalid_credentials': 'Invalid email or password.',
+        
         # Dashboard
         'client_dashboard': 'Client Dashboard',
         'professional_dashboard': 'Professional Dashboard',
@@ -477,6 +494,23 @@ TRANSLATIONS = {
         'dont_have_account': '還沒有帳戶？',
         'register_here': '在此註冊',
         
+        # Email Verification
+        'registration_successful_verify_email': '註冊成功！請檢查您的電子郵件以驗證您的帳戶。',
+        'registration_successful_email_error': '註冊成功！但我們無法發送驗證郵件，請嘗試重新發送。',
+        'email_not_verified': '請在登入前驗證您的電子郵件地址。',
+        'email_verification_required': '需要電子郵件驗證',
+        'please_verify_email_to_continue': '請檢查您的電子郵件並點擊驗證連結以繼續。',
+        'resend_verification_email': '重新發送驗證郵件',
+        'email_already_verified': '您的電子郵件已經驗證過了。',
+        'email_verified_successfully': '電子郵件驗證成功！現在您可以登入了。',
+        'email_required': '電子郵件地址為必填項目。',
+        'user_not_found': '找不到用戶。',
+        'verification_email_sent': '驗證郵件發送成功。',
+        'verification_email_error': '發送驗證郵件失敗，請重試。',
+        'invalid_verification_token': '無效或過期的驗證令牌。',
+        'login_successful': '登入成功！',
+        'invalid_credentials': '無效的電子郵件或密碼。',
+        
         # Dashboard
         'client_dashboard': '客戶控制台',
         'professional_dashboard': '專業人士控制台',
@@ -800,6 +834,23 @@ TRANSLATIONS = {
         # Login
         'dont_have_account': 'アカウントをお持ちでない方は',
         'register_here': 'こちらから登録',
+        
+        # Email Verification
+        'registration_successful_verify_email': '登録が完了しました！メールを確認してアカウントを認証してください。',
+        'registration_successful_email_error': '登録が完了しました！ただし、認証メールの送信に失敗しました。再送をお試しください。',
+        'email_not_verified': 'ログインする前にメールアドレスを認証してください。',
+        'email_verification_required': 'メール認証が必要です',
+        'please_verify_email_to_continue': 'メールを確認して認証リンクをクリックして続行してください。',
+        'resend_verification_email': '認証メールを再送信',
+        'email_already_verified': 'メールアドレスは既に認証済みです。',
+        'email_verified_successfully': 'メール認証が完了しました！ログインできます。',
+        'email_required': 'メールアドレスは必須です。',
+        'user_not_found': 'ユーザーが見つかりません。',
+        'verification_email_sent': '認証メールを送信しました。',
+        'verification_email_error': '認証メールの送信に失敗しました。再度お試しください。',
+        'invalid_verification_token': '無効または期限切れの認証トークンです。',
+        'login_successful': 'ログインしました！',
+        'invalid_credentials': 'メールアドレスまたはパスワードが正しくありません。',
         
         # Dashboard
         'client_dashboard': 'クライアントダッシュボード',
