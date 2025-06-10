@@ -6,6 +6,7 @@ from models import User, Brief, Proposal, ProfessionalSkill
 from email_verification import create_verification_token, send_verification_email, verify_token, mark_email_verified, resend_verification_email
 from brief_generator import generate_brief_from_input
 from openai_helper import generate_structured_brief
+from title_generator import generate_optimized_title
 from admin_utils import superadmin_required, get_user_stats
 from brief_parser import parse_structured_brief
 from credit_manager import grant_registration_bonus, deduct_credit_for_brief, deduct_credit_for_proposal, admin_adjust_credits, get_registration_bonus_credits, set_registration_bonus_credits, initialize_credit_settings
@@ -247,13 +248,22 @@ def create_brief():
             # Generate structured brief from natural language input (fallback)
             brief_data = generate_brief_from_input(raw_input)
             
+            # Generate optimized title using new format
+            optimized_title = generate_optimized_title(
+                service_type=service_type,
+                budget_min=brief_data.get('budget_min'),
+                budget_max=brief_data.get('budget_max'),
+                raw_input=raw_input,
+                structured_brief=structured_brief
+            )
+            
             # Create new brief
             brief = Brief(
                 user_id=current_user.id,
                 raw_input=raw_input,
                 structured_brief=structured_brief if structured_brief else None,
                 service_type=service_type,
-                title=brief_data['title'],
+                title=optimized_title,
                 description=brief_data['description'],
                 platform_preference=brief_data['platform_preference'],
                 budget_min=brief_data['budget_min'],
