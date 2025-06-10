@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}{{ professional.full_name or professional.email.split('@')[0] }} - {{ _('professional_profile') }} - 464955{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Professional Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                     style="width: 80px; height: 80px; font-size: 2rem;">
+                                    {{ (professional.full_name or professional.email.split('@')[0])[0].upper() }}
+                                </div>
+                                <div>
+                                    <h2 class="mb-1">{{ professional.full_name or professional.email.split('@')[0] }}</h2>
+                                    <p class="text-muted mb-1">{{ _('marketing_professional') }}</p>
+                                    {% if professional.company_name %}
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-building me-1"></i>{{ professional.company_name }}
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="mb-2">
+                                <span class="badge bg-success fs-6">
+                                    <i class="fas fa-star me-1"></i>{{ avg_proficiency }}/5 {{ _('avg_rating') }}
+                                </span>
+                            </div>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-calendar me-1"></i>{{ _('member_since') }} {{ professional.created_at.strftime('%Y-%m') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ total_skills }}</h3>
+                    <p class="text-muted mb-0">{{ _('professional_skills') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-info">{{ total_proposals }}</h3>
+                    <p class="text-muted mb-0">{{ _('total_proposals') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">{{ accepted_proposals }}</h3>
+                    <p class="text-muted mb-0">{{ _('accepted_proposals') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    {% if total_proposals > 0 %}
+                        <h3 class="text-warning">{{ ((accepted_proposals / total_proposals) * 100)|round|int }}%</h3>
+                        <p class="text-muted mb-0">{{ _('success_rate') }}</p>
+                    {% else %}
+                        <h3 class="text-muted">-</h3>
+                        <p class="text-muted mb-0">{{ _('success_rate') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Skills -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-star me-2"></i>{{ _('professional_skills') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if total_skills > 0 %}
+                        {% set categories = ['meta_ads', 'google_ads', 'seo'] %}
+                        {% for category in categories %}
+                            {% set category_skills = skills_by_category[category] %}
+                            {% if category_skills %}
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-{{ 'facebook' if category == 'meta_ads' else 'google' if category == 'google_ads' else 'search' }} me-2"></i>
+                                    {% if category == 'meta_ads' %}{{ _('meta_ads_category') }}
+                                    {% elif category == 'google_ads' %}{{ _('google_ads_category') }}
+                                    {% elif category == 'seo' %}{{ _('seo_category') }}
+                                    {% endif %}
+                                </h6>
+                                <div class="row">
+                                    {% for skill in category_skills %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-light">
+                                            <div class="card-body py-3">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <h6 class="mb-0">{{ skill.skill_name }}</h6>
+                                                    <div>
+                                                        {% for i in range(1, 6) %}
+                                                            <i class="fas fa-star {% if i <= skill.proficiency_level %}text-warning{% else %}text-muted{% endif %} small"></i>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% if skill.notes %}
+                                                <p class="text-muted small mb-2">{{ skill.notes }}</p>
+                                                {% endif %}
+                                                {% if skill.portfolio_link %}
+                                                <a href="{{ skill.portfolio_link }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-external-link-alt me-1"></i>{{ _('view_portfolio') }}
+                                                </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">{{ _('no_skills_listed') }}</h5>
+                            <p class="text-muted">{{ _('professional_building_profile') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    {% if recent_proposals %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>{{ _('recent_activity') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for proposal in recent_proposals %}
+                        <div class="d-flex mb-3 pb-3 border-bottom">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="bg-{{ 'success' if proposal.status == 'accepted' else 'primary' if proposal.status == 'pending' else 'secondary' }} 
+                                           text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="fas fa-{{ 'check' if proposal.status == 'accepted' else 'clock' if proposal.status == 'pending' else 'times' }} small"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ _('proposal_submitted') }}</h6>
+                                        <p class="text-muted mb-1 small">{{ proposal.brief.title }}</p>
+                                        <span class="badge bg-{{ 'success' if proposal.status == 'accepted' else 'primary' if proposal.status == 'pending' else 'secondary' }}">
+                                            {% if proposal.status == 'accepted' %}{{ _('accepted') }}
+                                            {% elif proposal.status == 'pending' %}{{ _('pending') }}
+                                            {% else %}{{ _('rejected') }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">{{ proposal.created_at.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Contact Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5>{{ _('interested_in_working_together') }}</h5>
+                    <p class="text-muted">{{ _('browse_active_projects') }}</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>{{ _('view_active_projects') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add any specific scripts for professional profile here
+</script>
+{% endblock %}

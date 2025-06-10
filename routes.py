@@ -642,6 +642,57 @@ def reorder_skills():
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
 
+# Professional Profile Routes
+@app.route('/professional/<int:user_id>')
+def professional_profile(user_id):
+    """Public professional profile page"""
+    user = User.query.filter_by(id=user_id, role='pro').first_or_404()
+    
+    # Get professional skills ordered by category and display order
+    skills = ProfessionalSkill.query.filter_by(user_id=user_id).order_by(
+        ProfessionalSkill.category, 
+        ProfessionalSkill.display_order, 
+        ProfessionalSkill.created_at
+    ).all()
+    
+    # Group skills by category
+    skills_by_category = {
+        'meta_ads': [],
+        'google_ads': [],
+        'seo': []
+    }
+    
+    for skill in skills:
+        if skill.category in skills_by_category:
+            skills_by_category[skill.category].append(skill)
+    
+    # Get recent proposals to show professional's activity (without sensitive info)
+    recent_proposals = Proposal.query.filter_by(user_id=user_id).order_by(
+        Proposal.created_at.desc()
+    ).limit(5).all()
+    
+    # Calculate some stats
+    total_proposals = Proposal.query.filter_by(user_id=user_id).count()
+    accepted_proposals = Proposal.query.filter_by(user_id=user_id, status='accepted').count()
+    
+    # Calculate average proficiency level
+    if skills:
+        avg_proficiency = sum(skill.proficiency_level for skill in skills) / len(skills)
+    else:
+        avg_proficiency = 0
+    
+    return render_template('professional_profile.html', 
+                         professional=user,
+                         skills_by_category=skills_by_category,
+                         recent_proposals=recent_proposals,
+                         total_proposals=total_proposals,
+                         accepted_proposals=accepted_proposals,
+                         avg_proficiency=round(avg_proficiency, 1),
+                         total_skills=len(skills),
+                         _=_, 
+                         get_languages=get_languages, 
+                         current_lang=get_current_language())
+
 # API Routes
 @app.route('/api/generate-brief', methods=['POST'])
 @login_required

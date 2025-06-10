@@ -388,6 +388,26 @@ TRANSLATIONS = {
         'skill_name_required': 'Skill name is required.',
         'invalid_proficiency_level': 'Proficiency level must be between 1 and 5.',
         'access_denied_pro_only': 'Access denied. Professional account required.',
+        
+        # Professional Profile
+        'professional_profile': 'Professional Profile',
+        'marketing_professional': 'Marketing Professional',
+        'avg_rating': 'Avg Rating',
+        'member_since': 'Member since',
+        'professional_skills': 'Professional Skills',
+        'success_rate': 'Success Rate',
+        'accepted_proposals': 'Accepted Proposals',
+        'no_skills_listed': 'No skills listed yet',
+        'professional_building_profile': 'This professional is still building their profile.',
+        'recent_activity': 'Recent Activity',
+        'proposal_submitted': 'Proposal Submitted',
+        'rejected': 'Rejected',
+        'interested_in_working_together': 'Interested in working together?',
+        'browse_active_projects': 'Browse active projects and connect with this professional.',
+        'view_active_projects': 'View Active Projects',
+        'view_public_profile': 'View Public Profile',
+        'browse_professionals': 'Browse Professionals',
+        'find_professionals': 'Find Marketing Professionals',
     },
     
     'zh': {
@@ -682,6 +702,26 @@ TRANSLATIONS = {
         'skill_name_required': '技能名稱為必填項目。',
         'invalid_proficiency_level': '熟練度必須在1到5之間。',
         'access_denied_pro_only': '拒絕存取。僅限專業帳戶使用。',
+        
+        # Professional Profile
+        'professional_profile': '專業檔案',
+        'marketing_professional': '行銷專業人士',
+        'avg_rating': '平均評分',
+        'member_since': '加入時間',
+        'professional_skills': '專業技能',
+        'success_rate': '成功率',
+        'accepted_proposals': '已接受提案',
+        'no_skills_listed': '尚未建立技能檔案',
+        'professional_building_profile': '此專業人士正在完善個人檔案。',
+        'recent_activity': '最近活動',
+        'proposal_submitted': '提交提案',
+        'rejected': '已拒絕',
+        'interested_in_working_together': '有興趣合作嗎？',
+        'browse_active_projects': '瀏覽活躍專案並與此專業人士聯繫。',
+        'view_active_projects': '查看活躍專案',
+        'view_public_profile': '查看公開檔案',
+        'browse_professionals': '瀏覽專業人士',
+        'find_professionals': '尋找行銷專業人士',
     },
     
     'ja': {
@@ -938,6 +978,26 @@ TRANSLATIONS = {
         'skill_name_required': 'スキル名は必須です。',
         'invalid_proficiency_level': '習熟度は1から5の間で入力してください。',
         'access_denied_pro_only': 'アクセスが拒否されました。プロフェッショナルアカウントが必要です。',
+        
+        # Professional Profile
+        'professional_profile': 'プロフェッショナル プロフィール',
+        'marketing_professional': 'マーケティング専門家',
+        'avg_rating': '平均評価',
+        'member_since': 'メンバー登録',
+        'professional_skills': '専門スキル',
+        'success_rate': '成功率',
+        'accepted_proposals': '承認された提案',
+        'no_skills_listed': 'スキルがまだ登録されていません',
+        'professional_building_profile': 'この専門家はプロフィールを構築中です。',
+        'recent_activity': '最近の活動',
+        'proposal_submitted': '提案を提出',
+        'rejected': '拒否',
+        'interested_in_working_together': '一緒に働きませんか？',
+        'browse_active_projects': 'アクティブなプロジェクトを閲覧し、この専門家と連絡を取りましょう。',
+        'view_active_projects': 'アクティブなプロジェクトを見る',
+        'view_public_profile': '公開プロフィールを見る',
+        'browse_professionals': '専門家を閲覧',
+        'find_professionals': 'マーケティング専門家を探す',
     }
 }
 
