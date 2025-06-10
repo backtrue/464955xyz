@@ -82,6 +82,12 @@ TRANSLATIONS = {
         'invalid_credentials': 'Invalid email or password.',
         'you_can_now_login': 'You can now log in to your account.',
         
+        # Budget Fields
+        'monthly_budget': 'Monthly Budget',
+        'min_budget': 'Minimum',
+        'max_budget': 'Maximum',
+        'budget_help_text': 'Enter your monthly marketing budget range. Leave blank if flexible.',
+        
         # Dashboard
         'client_dashboard': 'Client Dashboard',
         'professional_dashboard': 'Professional Dashboard',
@@ -513,6 +519,12 @@ TRANSLATIONS = {
         'invalid_credentials': '無效的電子郵件或密碼。',
         'you_can_now_login': '現在您可以登入您的帳戶了。',
         
+        # Budget Fields
+        'monthly_budget': '每月預算',
+        'min_budget': '最低金額',
+        'max_budget': '最高金額',
+        'budget_help_text': '請輸入您的每月行銷預算範圍。如果彈性可留空。',
+        
         # Dashboard
         'client_dashboard': '客戶控制台',
         'professional_dashboard': '專業人士控制台',
@@ -854,6 +866,12 @@ TRANSLATIONS = {
         'login_successful': 'ログインしました！',
         'invalid_credentials': 'メールアドレスまたはパスワードが正しくありません。',
         'you_can_now_login': 'アカウントにログインできるようになりました。',
+        
+        # Budget Fields
+        'monthly_budget': '月額予算',
+        'min_budget': '最低金額',
+        'max_budget': '最高金額',
+        'budget_help_text': '月間マーケティング予算の範囲を入力してください。柔軟な場合は空白のままにしてください。',
         
         # Dashboard
         'client_dashboard': 'クライアントダッシュボード',

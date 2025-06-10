@@ -237,6 +237,22 @@ def create_brief():
             return render_template('create_brief.html', _=_, get_languages=get_languages, current_lang=get_current_language())
         
         try:
+            # Get budget information
+            budget_min = request.form.get('budget_min')
+            budget_max = request.form.get('budget_max')
+            budget_currency = request.form.get('budget_currency', 'USD')
+            
+            # Convert budget strings to integers if provided
+            try:
+                budget_min = int(budget_min) if budget_min else None
+            except (ValueError, TypeError):
+                budget_min = None
+                
+            try:
+                budget_max = int(budget_max) if budget_max else None
+            except (ValueError, TypeError):
+                budget_max = None
+            
             # Get structured brief if provided (from AI generation)
             structured_brief = request.form.get('structured_brief', '').strip()
             

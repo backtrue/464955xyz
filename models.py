@@ -66,6 +66,7 @@ class Brief(db.Model):
     platform_preference = db.Column(db.String(255), nullable=True)
     budget_min = db.Column(db.Integer, nullable=True)
     budget_max = db.Column(db.Integer, nullable=True)
+    budget_currency = db.Column(db.String(3), nullable=True, default='USD')  # USD, TWD, JPY
     suggested_items = db.Column(db.Text, nullable=True)
     duration_weeks = db.Column(db.Integer, nullable=True)
     marketing_goals = db.Column(db.Text, nullable=True)

@@ -77,6 +77,42 @@
                             </div>
                         </div>
 
+                        <!-- Budget Input -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <strong>{{ _('monthly_budget') }}</strong>
+                            </label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <select class="form-select" id="budget_currency" name="budget_currency">
+                                        {% if current_lang == 'zh' %}
+                                        <option value="TWD" selected>新台幣 (TWD)</option>
+                                        <option value="USD">美金 (USD)</option>
+                                        <option value="JPY">日圓 (JPY)</option>
+                                        {% elif current_lang == 'ja' %}
+                                        <option value="JPY" selected>円 (JPY)</option>
+                                        <option value="USD">ドル (USD)</option>
+                                        <option value="TWD">台湾ドル (TWD)</option>
+                                        {% else %}
+                                        <option value="USD" selected>US Dollar (USD)</option>
+                                        <option value="TWD">Taiwan Dollar (TWD)</option>
+                                        <option value="JPY">Japanese Yen (JPY)</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" id="budget_min" name="budget_min" placeholder="{{ _('min_budget') }}" min="0">
+                                </div>
+                                <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                    <span>-</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" id="budget_max" name="budget_max" placeholder="{{ _('max_budget') }}" min="0">
+                                </div>
+                            </div>
+                            <div class="form-text">{{ _('budget_help_text') }}</div>
+                        </div>
+
                         <!-- Natural Language Input -->
                         <div class="mb-4">
                             <label for="raw_input" class="form-label">
@@ -119,6 +155,17 @@
                                         <div class="card-body p-3">
                                             <h6 class="card-title">B2B業者</h6>
                                             <p class="card-text small">我們是食品 ODM/OEM 廠商，專門幫忙生產純素食產品，各種年齡族群都有，月預算 5 萬元。</p>
+                                            <button type="button" class="btn btn-sm btn-primary fw-bold" onclick="fillExample(this.previousElementSibling.textContent)">
+                                                <i class="fas fa-copy me-1"></i>{{ _('use_this') }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-secondary mb-2">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title">地區商家合作</h6>
+                                            <p class="card-text small">我是在台北西門町開伴手禮店的店長，我希望增加韓國觀光客來實體店購買的機會，月預算 5 萬。</p>
                                             <button type="button" class="btn btn-sm btn-primary fw-bold" onclick="fillExample(this.previousElementSibling.textContent)">
                                                 <i class="fas fa-copy me-1"></i>{{ _('use_this') }}
                                             </button>
