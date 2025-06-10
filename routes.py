@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash, session, jsonify
+from flask import render_template, request, redirect, url_for, flash, session, jsonify, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from app import app, db
@@ -429,6 +429,7 @@ def update_profile():
         full_name = request.form.get('full_name', '').strip()
         company_name = request.form.get('company_name', '').strip()
         email = request.form.get('email', '').strip()
+        profile_slug = request.form.get('profile_slug', '').strip()
         current_password = request.form.get('current_password', '')
         new_password = request.form.get('new_password', '')
         confirm_password = request.form.get('confirm_password', '')
@@ -444,10 +445,28 @@ def update_profile():
             flash(_('email_already_exists'), 'error')
             return redirect(url_for('user_profile'))
         
+        # Validate and check profile slug for professionals
+        if current_user.role == 'pro' and profile_slug:
+            # Validate slug format (alphanumeric and hyphens only, 3-50 chars)
+            import re
+            if not re.match(r'^[a-zA-Z0-9-]{3,50}$', profile_slug):
+                flash(_('invalid_profile_slug_format'), 'error')
+                return redirect(url_for('user_profile'))
+            
+            # Check if slug is already taken
+            existing_slug = User.query.filter(User.profile_slug == profile_slug, User.id != current_user.id).first()
+            if existing_slug:
+                flash(_('profile_slug_already_taken'), 'error')
+                return redirect(url_for('user_profile'))
+        
         # Update basic profile information
         current_user.full_name = full_name if full_name else None
         current_user.company_name = company_name if company_name else None
         current_user.email = email
+        
+        # Update profile slug for professionals
+        if current_user.role == 'pro':
+            current_user.profile_slug = profile_slug if profile_slug else None
         
         # Handle password change if requested
         if current_password or new_password or confirm_password:
@@ -643,13 +662,28 @@ def reorder_skills():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 # Professional Profile Routes
-@app.route('/professional/<int:user_id>')
-def professional_profile(user_id):
-    """Public professional profile page"""
-    user = User.query.filter_by(id=user_id, role='pro').first_or_404()
+@app.route('/professional/<slug>')
+def professional_profile(slug):
+    """Public professional profile page by slug or ID"""
+    user = None
+    
+    # Try to find by custom slug first
+    if slug and not slug.isdigit():
+        user = User.query.filter_by(profile_slug=slug, role='pro').first()
+    
+    # If not found by slug or slug is numeric, try by ID
+    if not user:
+        try:
+            user_id = int(slug)
+            user = User.query.filter_by(id=user_id, role='pro').first()
+        except (ValueError, TypeError):
+            pass
+    
+    if not user:
+        abort(404)
     
     # Get professional skills ordered by category and display order
-    skills = ProfessionalSkill.query.filter_by(user_id=user_id).order_by(
+    skills = ProfessionalSkill.query.filter_by(user_id=user.id).order_by(
         ProfessionalSkill.category, 
         ProfessionalSkill.display_order, 
         ProfessionalSkill.created_at
@@ -667,13 +701,13 @@ def professional_profile(user_id):
             skills_by_category[skill.category].append(skill)
     
     # Get recent proposals to show professional's activity (without sensitive info)
-    recent_proposals = Proposal.query.filter_by(user_id=user_id).order_by(
+    recent_proposals = Proposal.query.filter_by(user_id=user.id).order_by(
         Proposal.created_at.desc()
     ).limit(5).all()
     
     # Calculate some stats
-    total_proposals = Proposal.query.filter_by(user_id=user_id).count()
-    accepted_proposals = Proposal.query.filter_by(user_id=user_id, status='accepted').count()
+    total_proposals = Proposal.query.filter_by(user_id=user.id).count()
+    accepted_proposals = Proposal.query.filter_by(user_id=user.id, status='accepted').count()
     
     # Calculate average proficiency level
     if skills:

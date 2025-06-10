@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     company_name = db.Column(db.String(255), nullable=True)
     full_name = db.Column(db.String(255), nullable=True)
     credits = db.Column(db.Integer, default=0, nullable=False)
+    profile_slug = db.Column(db.String(50), unique=True, nullable=True)  # Custom URL slug for professionals
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
