@@ -511,6 +511,7 @@ TRANSLATIONS = {
         'invalid_verification_token': '無效或過期的驗證令牌。',
         'login_successful': '登入成功！',
         'invalid_credentials': '無效的電子郵件或密碼。',
+        'you_can_now_login': '現在您可以登入您的帳戶了。',
         
         # Dashboard
         'client_dashboard': '客戶控制台',
@@ -852,6 +853,7 @@ TRANSLATIONS = {
         'invalid_verification_token': '無効または期限切れの認証トークンです。',
         'login_successful': 'ログインしました！',
         'invalid_credentials': 'メールアドレスまたはパスワードが正しくありません。',
+        'you_can_now_login': 'アカウントにログインできるようになりました。',
         
         # Dashboard
         'client_dashboard': 'クライアントダッシュボード',
